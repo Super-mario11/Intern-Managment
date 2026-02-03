@@ -1,0 +1,164 @@
+import React, { useEffect, useMemo, useState } from 'react'
+import type { Intern } from '../types'
+
+const formatDate = (value: string) => {
+  if (!value) return ''
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ''
+  return parsed.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  })
+}
+
+const addDays = (value: string, days: number) => {
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ''
+  parsed.setDate(parsed.getDate() + days)
+  return parsed.toISOString().slice(0, 10)
+}
+
+const getTimePeriod = (startDate: string) => {
+  if (!startDate) return '—'
+  const endDate = addDays(startDate, 84)
+  const startLabel = formatDate(startDate)
+  const endLabel = formatDate(endDate)
+  if (!startLabel || !endLabel) return '—'
+  return `${startLabel} - ${endLabel}`
+}
+
+export default function InternListPage() {
+  const [interns, setInterns] = useState<Intern[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetch('/api/interns')
+      .then(async response => {
+        if (!response.ok) {
+          const data = await response.json().catch(() => null)
+          throw new Error(data?.error || 'Failed to load interns')
+        }
+        return response.json()
+      })
+      .then(data => {
+        setInterns(data?.interns || [])
+      })
+      .catch(err => {
+        setError(err instanceof Error ? err.message : 'Failed to load interns')
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const rows = useMemo(() => {
+    return interns.map(intern => ({
+      id: intern.id,
+      name: intern.name,
+      email: intern.email,
+      role: intern.role,
+      period: getTimePeriod(intern.startDate),
+    }))
+  }, [interns])
+
+  return (
+    <div className="min-h-screen bg-zinc-100">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 mb-3">
+            Directory
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-zinc-900">
+            Intern Directory
+          </h1>
+          <p className="text-sm text-zinc-500">
+            Name, email, role, and internship time period.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px]">
+              <thead className="bg-zinc-50 text-xs text-zinc-500">
+                <tr>
+                  <th className="text-left px-6 py-3">ID</th>
+                  <th className="text-left px-6 py-3">Name</th>
+                  <th className="text-left px-6 py-3">Email</th>
+                  <th className="text-left px-6 py-3">Role</th>
+                  <th className="text-left px-6 py-3">Time Period</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y text-sm">
+                {loading ? (
+                  <tr>
+                    <td className="px-6 py-6 text-zinc-500" colSpan={5}>
+                      Loading interns...
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td className="px-6 py-6 text-red-600" colSpan={5}>
+                      {error}
+                    </td>
+                  </tr>
+                ) : rows.length === 0 ? (
+                  <tr>
+                    <td className="px-6 py-6 text-zinc-500" colSpan={5}>
+                      No interns available yet. Add them in the Admin page.
+                    </td>
+                  </tr>
+                ) : (
+                  rows.map(row => (
+                    <tr key={row.id}>
+                      <td className="px-6 py-4 text-zinc-600">{row.id}</td>
+                      <td className="px-6 py-4 font-medium text-zinc-900">
+                        {row.name}
+                      </td>
+                      <td className="px-6 py-4 text-zinc-600">{row.email}</td>
+                      <td className="px-6 py-4 text-zinc-600">{row.role}</td>
+                      <td className="px-6 py-4 text-zinc-600">{row.period}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:hidden">
+          {loading ? (
+            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm">
+              Loading interns...
+            </div>
+          ) : error ? (
+            <div className="bg-white rounded-2xl p-5 text-sm text-red-600 shadow-sm">
+              {error}
+            </div>
+          ) : rows.length === 0 ? (
+            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm">
+              No interns available yet. Add them in the Admin page.
+            </div>
+          ) : (
+            rows.map(row => (
+              <div key={row.id} className="bg-white rounded-2xl p-5 shadow-sm">
+                <div className="text-xs text-zinc-400">{row.id}</div>
+                <div className="text-lg font-semibold text-zinc-900">
+                  {row.name}
+                </div>
+                <div className="text-sm text-zinc-600">{row.email}</div>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                  <span className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full">
+                    {row.role}
+                  </span>
+                  <span className="bg-zinc-100 text-zinc-600 px-2.5 py-1 rounded-full">
+                    {row.period}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

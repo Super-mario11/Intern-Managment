@@ -1,0 +1,73 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f3f4f6;
+  --card: #ffffff;
+}
+
+/* Preserve some basic custom styles below Tailwind's base */
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--bg);
+  color: #111827;
+}
+
+a { font-weight: 500; }
+
+button { border-radius: 8px; }
+
+/* small utility for the old demo layout */
+.logo { height: 3rem }
+
+/* Animations */
+@keyframes avatarFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-avatar-hover {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.animate-avatar-hover:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+/* subtle fade-in utility */
+.animate-fade-in {
+  animation: fadeIn 360ms ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Details expansion smoothing and scrollbar hiding */
+.details-container {
+  transition: max-height 420ms cubic-bezier(.2,.9,.2,1);
+  will-change: max-height;
+}
+.details-inner {
+  transition: opacity 320ms cubic-bezier(.2,.9,.2,1), transform 320ms cubic-bezier(.2,.9,.2,1);
+  will-change: opacity, transform;
+  overflow: auto;
+  max-height: none;
+}
+
+
+/* hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
