@@ -72,11 +72,11 @@ export default async function handler(
         ${role},
         ${email},
         ${phone ?? ''},
-        ${toTextArray(projects ?? [])},
+        ${toTextArray(projects ?? [])}::text[],
         ${manager ?? ''},
         ${startDate || null},
         ${performance ?? ''},
-        ${toTextArray(skills ?? [])},
+        ${toTextArray(skills ?? [])}::text[],
         ${department ?? ''}
       )
       RETURNING *

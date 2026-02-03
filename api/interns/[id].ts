@@ -54,11 +54,11 @@ export default async function handler(
           role = ${role},
           email = ${email},
           phone = ${phone ?? ''},
-        projects = ${toTextArray(projects ?? [])},
+        projects = ${toTextArray(projects ?? [])}::text[],
           manager = ${manager ?? ''},
           start_date = ${startDate || null},
           performance = ${performance ?? ''},
-        skills = ${toTextArray(skills ?? [])},
+        skills = ${toTextArray(skills ?? [])}::text[],
           department = ${department ?? ''}
         WHERE id = ${internId}
         RETURNING *

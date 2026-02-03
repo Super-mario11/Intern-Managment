@@ -50,11 +50,11 @@ export default async function handler(
           ${intern.role ?? ''},
           ${intern.email ?? ''},
           ${intern.phone ?? ''},
-          ${toTextArray(intern.projects ?? [])},
+          ${toTextArray(intern.projects ?? [])}::text[],
           ${intern.manager ?? ''},
           ${intern.startDate || null},
           ${intern.performance ?? ''},
-          ${toTextArray(intern.skills ?? [])},
+          ${toTextArray(intern.skills ?? [])}::text[],
           ${intern.department ?? ''}
         )
         ON CONFLICT (id) DO UPDATE SET

@@ -29,8 +29,13 @@ export type Intern = {
   department: string
 }
 
-export const toTextArray = (values: string[]) =>
-  sql`ARRAY[${sql.join(values)}]::text[]`
+const escapePgArrayValue = (value: string) =>
+  `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+
+export const toTextArray = (values: string[]) => {
+  if (!values.length) return '{}' // empty array literal
+  return `{${values.map(escapePgArrayValue).join(',')}}`
+}
 
 export const ensureTable = async () => {
   await sql`
