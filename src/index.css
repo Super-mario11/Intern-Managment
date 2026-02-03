@@ -23,9 +23,6 @@ a { font-weight: 500; }
 
 button { border-radius: 8px; }
 
-/* small utility for the old demo layout */
-.logo { height: 3rem }
-
 /* Animations */
 @keyframes avatarFloat {
   0% { transform: translateY(0); }
