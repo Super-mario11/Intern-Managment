@@ -1,5 +1,3 @@
-import React from 'react'
-
 type InputFieldProps = {
   label: string
   value: string

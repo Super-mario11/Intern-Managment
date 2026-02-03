@@ -1,4 +1,3 @@
-import React from 'react'
 import type { FormState } from '../types'
 import InputField from './InputField'
 

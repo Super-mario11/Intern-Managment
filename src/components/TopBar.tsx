@@ -1,5 +1,3 @@
-import React from 'react'
-
 type TopBarProps = {
   onAdd: () => void
   onImport: () => void

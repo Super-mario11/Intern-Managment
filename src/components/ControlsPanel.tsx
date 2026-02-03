@@ -1,4 +1,3 @@
-import React from 'react'
 import type { SortKey } from '../types'
 
 type ControlsPanelProps = {
