@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { ensureTable, toIntern } from '../_db'
-import { requireAdminSession } from '../_auth'
+import { ensureTable, toIntern } from '../_db.js'
+import { requireAdminSession } from '../_auth.js'
 import { sql } from '@vercel/postgres'
 
 type InternPayload = {
@@ -52,11 +52,11 @@ export default async function handler(
         role = ${role},
         email = ${email},
         phone = ${phone ?? ''},
-        projects = ${projects ?? []},
+        projects = ${sql.array(projects ?? [], 'text')},
         manager = ${manager ?? ''},
         start_date = ${startDate || null},
         performance = ${performance ?? ''},
-        skills = ${skills ?? []},
+        skills = ${sql.array(skills ?? [], 'text')},
         department = ${department ?? ''}
       WHERE id = ${internId}
       RETURNING *

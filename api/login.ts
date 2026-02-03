@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import bcrypt from 'bcryptjs'
-import { createSessionToken, setSessionCookie } from './_auth'
+import { createSessionToken, setSessionCookie } from './_auth.js'
 
 const getPasswordHash = () => {
   const hash = process.env.ADMIN_PASSWORD_HASH

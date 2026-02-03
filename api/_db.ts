@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres'
-import { seedInterns } from './_seed'
+import { seedInterns } from './_seed.js'
 
 export type DbIntern = {
   id: string
@@ -84,11 +84,11 @@ export const seedIfEmpty = async () => {
         ${intern.role},
         ${intern.email},
         ${intern.phone},
-        ${intern.projects},
+        ${sql.array(intern.projects, 'text')},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${intern.skills},
+        ${sql.array(intern.skills, 'text')},
         ${intern.department}
       )
     `

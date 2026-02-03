@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { ensureTable, getNextId, toIntern } from '../_db'
-import { requireAdminSession } from '../_auth'
+import { ensureTable, getNextId, toIntern } from '../_db.js'
+import { requireAdminSession } from '../_auth.js'
 import { sql } from '@vercel/postgres'
 
 type IncomingIntern = {
@@ -48,11 +48,11 @@ export default async function handler(
         ${intern.role ?? ''},
         ${intern.email ?? ''},
         ${intern.phone ?? ''},
-        ${intern.projects ?? []},
+        ${sql.array(intern.projects ?? [], 'text')},
         ${intern.manager ?? ''},
         ${intern.startDate || null},
         ${intern.performance ?? ''},
-        ${intern.skills ?? []},
+        ${sql.array(intern.skills ?? [], 'text')},
         ${intern.department ?? ''}
       )
       ON CONFLICT (id) DO UPDATE SET
