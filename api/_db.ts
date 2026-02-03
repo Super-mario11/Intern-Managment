@@ -29,6 +29,9 @@ export type Intern = {
   department: string
 }
 
+export const toTextArray = (values: string[]) =>
+  sql`ARRAY[${sql.join(values)}]::text[]`
+
 export const ensureTable = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS interns (
@@ -84,11 +87,11 @@ export const seedIfEmpty = async () => {
         ${intern.role},
         ${intern.email},
         ${intern.phone},
-        ${sql.array(intern.projects, 'text')},
+        ${toTextArray(intern.projects)},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${sql.array(intern.skills, 'text')},
+        ${toTextArray(intern.skills)},
         ${intern.department}
       )
     `
