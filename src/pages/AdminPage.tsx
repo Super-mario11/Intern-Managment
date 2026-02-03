@@ -618,7 +618,7 @@ export default function AdminPage() {
       />
 
       <button
-        className="fixed bottom-6 right-6 border border-zinc-200 bg-white text-zinc-700 text-xs px-4 py-2 rounded-full shadow-sm hover:border-zinc-300"
+        className="fixed bottom-24 right-6 border border-zinc-200 bg-white text-zinc-700 text-xs px-4 py-2 rounded-full shadow-sm hover:border-zinc-300"
         onClick={handleLogout}
       >
         Log out
