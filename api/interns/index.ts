@@ -44,6 +44,7 @@ export default async function handler(
       res.status(200).json({
         ok: true,
         interns: interns.map(row => toIntern(row as DbIntern)),
+        total: totalInterns,
         totalPages,
         currentPage: page,
       })

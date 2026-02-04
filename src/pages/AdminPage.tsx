@@ -60,7 +60,7 @@ export default function AdminPage() {
 
   const fetchInterns = async () => {
     setLoading(true)
-    const response = await fetch('/api/interns')
+    const response = await fetch('/api/interns?limit=1000')
     const data = await response.json()
     if (data?.interns) {
       setInterns(data.interns)
