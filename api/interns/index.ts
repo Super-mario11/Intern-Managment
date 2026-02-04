@@ -1,7 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { sql } from '@vercel/postgres'
 import { requireAdminSession } from '../_auth.js'
-import { ensureTable, seedIfEmpty, toIntern } from '../_db.js'
+import {
+  ensureTable,
+  formatInternId,
+  getMaxInternIdNumber,
+  seedIfEmpty,
+  toIntern,
+} from '../_db.js'
 import type { DbIntern } from '../_db.js'
 
 type InternPayload = {
@@ -75,10 +81,14 @@ export default async function handler(
         return
       }
 
+      const nextIdNumber = (await getMaxInternIdNumber()) + 1
+      const id = formatInternId(nextIdNumber)
+
       const result = await sql`
         INSERT INTO interns (
-          name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
+          id, name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
         ) VALUES (
+          ${id},
           ${name},
           ${role},
           ${email},

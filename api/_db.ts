@@ -34,7 +34,7 @@ export type Intern = {
 export const ensureTable = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS interns (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       role TEXT NOT NULL,
       email TEXT NOT NULL,
@@ -63,19 +63,16 @@ export const ensureTable = async () => {
           AND column_name = 'id'
           AND data_type = 'uuid'
       ) THEN
-        ALTER TABLE interns ALTER COLUMN id SET DEFAULT gen_random_uuid();
-      ELSIF EXISTS (
-        SELECT 1
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-          AND table_name = 'interns'
-          AND column_name = 'id'
-          AND data_type IN ('text', 'character varying')
-      ) THEN
-        ALTER TABLE interns ALTER COLUMN id SET DEFAULT gen_random_uuid()::text;
+        ALTER TABLE interns ALTER COLUMN id TYPE TEXT USING id::text;
       END IF;
+
+      ALTER TABLE interns ALTER COLUMN id DROP DEFAULT;
+    EXCEPTION
+      WHEN undefined_column THEN
+        NULL;
     END $$;
   `
+
 }
 
 export const toIntern = (row: DbIntern): Intern => ({
@@ -101,8 +98,9 @@ export const seedIfEmpty = async () => {
   for (const intern of seedInterns) {
     await sql`
       INSERT INTO interns (
-        name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
+        id, name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
       ) VALUES (
+        ${intern.id},
         ${intern.name},
         ${intern.role},
         ${intern.email},
@@ -122,4 +120,21 @@ export const seedIfEmpty = async () => {
 export const resetSeed = async () => {
   await sql`DELETE FROM interns`
   await seedIfEmpty()
+}
+
+export const formatInternId = (value: number) =>
+  `ID${String(value).padStart(2, '0')}`
+
+export const getMaxInternIdNumber = async () => {
+  const { rows } = await sql`
+    SELECT id
+    FROM interns
+    WHERE id ~ '^ID\\d+$'
+    ORDER BY CAST(SUBSTRING(id, 3) AS INT) DESC
+    LIMIT 1
+  `
+  const current = rows[0]?.id as string | undefined
+  if (!current) return 0
+  const parsed = Number(current.slice(2))
+  return Number.isNaN(parsed) ? 0 : parsed
 }

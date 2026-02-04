@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Intern } from '../types'
+import { getInternImageUrl } from '../lib/internImages'
 import { initials } from '../lib/internUtils'
 
 type InternTableProps = {
@@ -64,6 +65,7 @@ export default function InternTable({
           ) : (
             interns.map(intern => {
               const open = expandedId === intern.id
+              const imageSrc = intern.imageUrl || getInternImageUrl(intern.id)
               return (
                 <React.Fragment key={intern.id}>
                   <tr
@@ -73,9 +75,9 @@ export default function InternTable({
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
-                          {intern.imageUrl ? (
+                          {imageSrc ? (
                             <img
-                              src={intern.imageUrl}
+                              src={imageSrc}
                               alt={intern.name}
                               className="w-full h-full object-cover"
                               loading="lazy"

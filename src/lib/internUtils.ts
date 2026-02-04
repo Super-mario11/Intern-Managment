@@ -28,13 +28,13 @@ export const parseListCell = (value: string) => {
 
 export const generateId = (interns: Intern[]) => {
   const max = interns.reduce((acc, intern) => {
-    const match = intern.id.match(/INT-(\d+)/)
+    const match = intern.id.match(/ID(\d+)/)
     if (!match) return acc
     const num = Number(match[1])
     return Number.isNaN(num) ? acc : Math.max(acc, num)
   }, 0)
-  const next = String(max + 1).padStart(3, '0')
-  return `INT-${next}`
+  const next = String(max + 1).padStart(2, '0')
+  return `ID${next}`
 }
 
 export const parseCSV = (text: string) => {

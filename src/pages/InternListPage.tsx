@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Intern } from '../types'
 import Pagination from '../components/Pagination'
+import { getInternImageUrl } from '../lib/internImages'
 
 const formatDate = (value: string) => {
   if (!value) return ''
@@ -36,6 +37,7 @@ export default function InternListPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalInterns, setTotalInterns] = useState(0)
+  const [selected, setSelected] = useState<Intern | null>(null)
   const limit = 10 // Items per page
 
   useEffect(() => {
@@ -64,7 +66,8 @@ export default function InternListPage() {
       name: intern.name,
       email: intern.email,
       role: intern.role,
-      imageUrl: intern.imageUrl,
+      imageUrl: intern.imageUrl || getInternImageUrl(intern.id),
+      intern,
       period: getTimePeriod(intern.startDate),
     }))
   }, [interns])
@@ -117,7 +120,11 @@ export default function InternListPage() {
                   </tr>
                 ) : (
                   rows.map(row => (
-                    <tr key={row.id}>
+                    <tr
+                      key={row.id}
+                      className="cursor-pointer hover:bg-zinc-50 transition"
+                      onClick={() => setSelected(row.intern)}
+                    >
                       <td className="px-6 py-4 text-zinc-600">{row.id}</td>
                       <td className="px-6 py-4 font-medium text-zinc-900">
                         <div className="flex items-center gap-3">
@@ -167,7 +174,11 @@ export default function InternListPage() {
             </div>
           ) : (
             rows.map(row => (
-              <div key={row.id} className="bg-white rounded-2xl p-5 shadow-sm">
+              <div
+                key={row.id}
+                className="bg-white rounded-2xl p-5 shadow-sm cursor-pointer hover:shadow-md transition"
+                onClick={() => setSelected(row.intern)}
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
                     {row.imageUrl ? (
@@ -220,6 +231,121 @@ export default function InternListPage() {
           </div>
         )}
       </div>
+
+      {selected ? (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 px-4"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto overflow-hidden"
+            onClick={event => event.stopPropagation()}
+          >
+            <div className="border-b px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                  {selected.imageUrl || getInternImageUrl(selected.id) ? (
+                    <img
+                      src={selected.imageUrl || getInternImageUrl(selected.id)}
+                      alt={selected.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    selected.name
+                      .split(' ')
+                      .map(n => n[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase()
+                  )}
+                </div>
+                <div>
+                  <div className="text-sm text-zinc-500">{selected.id}</div>
+                  <div className="text-lg font-semibold text-zinc-900">
+                    {selected.name}
+                  </div>
+                </div>
+              </div>
+              <button
+                className="text-zinc-400 hover:text-zinc-600"
+                onClick={() => setSelected(null)}
+              >
+                x
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-4 text-sm text-zinc-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <div className="text-xs text-zinc-500">Role</div>
+                  <div>{selected.role || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-500">Email</div>
+                  <div>{selected.email || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-500">Phone</div>
+                  <div>{selected.phone || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-500">Department</div>
+                  <div>{selected.department || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-500">Manager</div>
+                  <div>{selected.manager || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-500">Start date</div>
+                  <div>{selected.startDate || '-'}</div>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-zinc-500">Projects</div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {selected.projects.length ? (
+                    selected.projects.map(project => (
+                      <span
+                        key={project}
+                        className="bg-zinc-100 text-zinc-700 px-2.5 py-1 rounded-full text-xs"
+                      >
+                        {project}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-zinc-500">-</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-zinc-500">Skills</div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {selected.skills.length ? (
+                    selected.skills.map(skill => (
+                      <span
+                        key={skill}
+                        className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full text-xs"
+                      >
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-zinc-500">-</span>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-zinc-500">Performance</div>
+                <div>{selected.performance || 'No notes yet.'}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
