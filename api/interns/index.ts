@@ -1,11 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import {
-  ensureTable,
-  toIntern,
-} from '../_db.js'
-import type { DbIntern } from '../_db.js'
-import { requireAdminSession } from '../_auth.js'
 import { sql } from '@vercel/postgres'
+import { requireAdminSession } from '../_auth.js'
+import { ensureTable, toIntern } from '../_db.js'
+import type { DbIntern } from '../_db.js'
 
 type InternPayload = {
   name?: string
@@ -38,7 +35,8 @@ export default async function handler(
         LIMIT ${limit}
         OFFSET ${offset}
       `
-      const { rows: countResult } = await sql`SELECT COUNT(*)::int AS total FROM interns`
+      const { rows: countResult } =
+        await sql`SELECT COUNT(*)::int AS total FROM interns`
       const totalInterns = countResult[0]?.total || 0
       const totalPages = Math.ceil(totalInterns / limit)
 
@@ -74,26 +72,26 @@ export default async function handler(
       }
 
       const result = await sql`
-      INSERT INTO interns (
-        name, role, email, phone, projects, manager, start_date, performance, skills, department
-      ) VALUES (
-        ${name},
-        ${role},
-        ${email},
-        ${phone ?? ''},
-        ${sql.array(projects ?? [])},
-        ${manager ?? ''},
-        ${startDate || null},
-        ${performance ?? ''},
-        ${sql.array(skills ?? [])},
-        ${department ?? ''}
-      )
-      RETURNING *
-    `
-    res.status(201).json({
-      ok: true,
-      intern: toIntern(result.rows[0] as DbIntern),
-    })
+        INSERT INTO interns (
+          name, role, email, phone, projects, manager, start_date, performance, skills, department
+        ) VALUES (
+          ${name},
+          ${role},
+          ${email},
+          ${phone ?? ''},
+          ${projects ?? []}::text[],
+          ${manager ?? ''},
+          ${startDate || null},
+          ${performance ?? ''},
+          ${skills ?? []}::text[],
+          ${department ?? ''}
+        )
+        RETURNING *
+      `
+      res.status(201).json({
+        ok: true,
+        intern: toIntern(result.rows[0] as DbIntern),
+      })
       return
     }
 

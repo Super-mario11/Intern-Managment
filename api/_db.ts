@@ -29,8 +29,6 @@ export type Intern = {
   department: string
 }
 
-
-
 export const ensureTable = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS interns (
@@ -58,7 +56,9 @@ export const toIntern = (row: DbIntern): Intern => ({
   phone: row.phone ?? '',
   projects: row.projects ?? [],
   manager: row.manager ?? '',
-  startDate: row.start_date ? new Date(row.start_date).toISOString().slice(0, 10) : '',
+  startDate: row.start_date
+    ? new Date(row.start_date).toISOString().slice(0, 10)
+    : '',
   performance: row.performance ?? '',
   skills: row.skills ?? [],
   department: row.department ?? '',
@@ -76,11 +76,11 @@ export const seedIfEmpty = async () => {
         ${intern.role},
         ${intern.email},
         ${intern.phone},
-        ${sql.array(intern.projects)},
+        ${intern.projects}::text[],
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${sql.array(intern.skills)},
+        ${intern.skills}::text[],
         ${intern.department}
       )
     `
