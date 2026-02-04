@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { sql } from '@vercel/postgres'
 import { requireAdminSession } from '../_auth.js'
-import { ensureTable, toIntern } from '../_db.js'
+import { ensureTable, seedIfEmpty, toIntern } from '../_db.js'
 import type { DbIntern } from '../_db.js'
 
 type InternPayload = {
@@ -25,6 +25,7 @@ export default async function handler(
     await ensureTable()
 
     if (req.method === 'GET') {
+      await seedIfEmpty()
       const page = Number(req.query.page) || 1
       const limit = Number(req.query.limit) || 10
       const offset = (page - 1) * limit
