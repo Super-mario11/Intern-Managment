@@ -7,6 +7,7 @@ export type DbIntern = {
   role: string
   email: string
   phone: string | null
+  image_url: string | null
   projects: string[]
   manager: string | null
   start_date: string | null
@@ -21,6 +22,7 @@ export type Intern = {
   role: string
   email: string
   phone: string
+  imageUrl: string
   projects: string[]
   manager: string
   startDate: string
@@ -37,6 +39,7 @@ export const ensureTable = async () => {
       role TEXT NOT NULL,
       email TEXT NOT NULL,
       phone TEXT,
+      image_url TEXT,
       projects TEXT[] NOT NULL DEFAULT '{}',
       manager TEXT,
       start_date DATE,
@@ -46,6 +49,8 @@ export const ensureTable = async () => {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
+
+  await sql`ALTER TABLE interns ADD COLUMN IF NOT EXISTS image_url TEXT`
 
   await sql`
     DO $$
@@ -79,6 +84,7 @@ export const toIntern = (row: DbIntern): Intern => ({
   role: row.role,
   email: row.email,
   phone: row.phone ?? '',
+  imageUrl: row.image_url ?? '',
   projects: row.projects ?? [],
   manager: row.manager ?? '',
   startDate: row.start_date
@@ -95,12 +101,13 @@ export const seedIfEmpty = async () => {
   for (const intern of seedInterns) {
     await sql`
       INSERT INTO interns (
-        name, role, email, phone, projects, manager, start_date, performance, skills, department
+        name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
       ) VALUES (
         ${intern.name},
         ${intern.role},
         ${intern.email},
         ${intern.phone},
+        ${intern.imageUrl || null},
         ${intern.projects}::text[],
         ${intern.manager},
         ${intern.startDate || null},

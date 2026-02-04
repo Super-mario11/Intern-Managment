@@ -9,6 +9,7 @@ type InternPayload = {
   role?: string
   email?: string
   phone?: string
+  imageUrl?: string
   projects?: string[]
   manager?: string
   startDate?: string
@@ -40,6 +41,7 @@ export default async function handler(
         role,
         email,
         phone,
+        imageUrl,
         projects,
         manager,
         startDate,
@@ -54,6 +56,7 @@ export default async function handler(
           role = ${role},
           email = ${email},
           phone = ${phone ?? ''},
+          image_url = ${imageUrl || null},
           projects = ${projects ?? []}::text[],
           manager = ${manager ?? ''},
           start_date = ${startDate || null},

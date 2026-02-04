@@ -64,6 +64,7 @@ export default function InternListPage() {
       name: intern.name,
       email: intern.email,
       role: intern.role,
+      imageUrl: intern.imageUrl,
       period: getTimePeriod(intern.startDate),
     }))
   }, [interns])
@@ -119,7 +120,26 @@ export default function InternListPage() {
                     <tr key={row.id}>
                       <td className="px-6 py-4 text-zinc-600">{row.id}</td>
                       <td className="px-6 py-4 font-medium text-zinc-900">
-                        {row.name}
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold overflow-hidden">
+                            {row.imageUrl ? (
+                              <img
+                                src={row.imageUrl}
+                                alt={row.name}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            ) : (
+                              row.name
+                                .split(' ')
+                                .map(n => n[0])
+                                .slice(0, 2)
+                                .join('')
+                                .toUpperCase()
+                            )}
+                          </div>
+                          <span>{row.name}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-zinc-600">{row.email}</td>
                       <td className="px-6 py-4 text-zinc-600">{row.role}</td>
@@ -148,9 +168,30 @@ export default function InternListPage() {
           ) : (
             rows.map(row => (
               <div key={row.id} className="bg-white rounded-2xl p-5 shadow-sm">
-                <div className="text-xs text-zinc-400">{row.id}</div>
-                <div className="text-lg font-semibold text-zinc-900">
-                  {row.name}
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                    {row.imageUrl ? (
+                      <img
+                        src={row.imageUrl}
+                        alt={row.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      row.name
+                        .split(' ')
+                        .map(n => n[0])
+                        .slice(0, 2)
+                        .join('')
+                        .toUpperCase()
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-xs text-zinc-400">{row.id}</div>
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {row.name}
+                    </div>
+                  </div>
                 </div>
                 <div className="text-sm text-zinc-600">{row.email}</div>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">

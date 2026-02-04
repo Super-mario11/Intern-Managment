@@ -56,6 +56,11 @@ export default function InternModal({
               onChange={value => onFieldChange('phone', value)}
             />
             <InputField
+              label="Image URL"
+              value={form.imageUrl}
+              onChange={value => onFieldChange('imageUrl', value)}
+            />
+            <InputField
               label="Manager"
               value={form.manager}
               onChange={value => onFieldChange('manager', value)}

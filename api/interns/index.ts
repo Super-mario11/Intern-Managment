@@ -9,6 +9,7 @@ type InternPayload = {
   role?: string
   email?: string
   phone?: string
+  imageUrl?: string
   projects?: string[]
   manager?: string
   startDate?: string
@@ -60,6 +61,7 @@ export default async function handler(
         role,
         email,
         phone,
+        imageUrl,
         projects,
         manager,
         startDate,
@@ -75,12 +77,13 @@ export default async function handler(
 
       const result = await sql`
         INSERT INTO interns (
-          name, role, email, phone, projects, manager, start_date, performance, skills, department
+          name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
         ) VALUES (
           ${name},
           ${role},
           ${email},
           ${phone ?? ''},
+          ${imageUrl || null},
           ${projects ?? []}::text[],
           ${manager ?? ''},
           ${startDate || null},

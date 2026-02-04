@@ -72,8 +72,17 @@ export default function InternTable({
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold">
-                          {initials(intern.name)}
+                        <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                          {intern.imageUrl ? (
+                            <img
+                              src={intern.imageUrl}
+                              alt={intern.name}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            initials(intern.name)
+                          )}
                         </div>
                         <div>
                           <div className="font-medium text-sm">

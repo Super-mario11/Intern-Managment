@@ -4,6 +4,7 @@ export type Intern = {
   role: string
   email: string
   phone: string
+  imageUrl: string
   projects: string[]
   manager: string
   startDate: string
@@ -20,6 +21,7 @@ export type FormState = {
   role: string
   email: string
   phone: string
+  imageUrl: string
   projectsText: string
   manager: string
   startDate: string

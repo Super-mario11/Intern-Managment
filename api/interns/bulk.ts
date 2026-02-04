@@ -10,6 +10,7 @@ type IncomingIntern = {
   role?: string
   email?: string
   phone?: string
+  imageUrl?: string
   projects?: string[]
   manager?: string
   startDate?: string
@@ -43,13 +44,14 @@ export default async function handler(
       const result = await sql`
         INSERT INTO interns (
           ${intern.id ? sql`id,` : sql``}
-          name, role, email, phone, projects, manager, start_date, performance, skills, department
+          name, role, email, phone, image_url, projects, manager, start_date, performance, skills, department
         ) VALUES (
           ${intern.id ? sql`${intern.id},` : sql``}
           ${intern.name ?? ''},
           ${intern.role ?? ''},
           ${intern.email ?? ''},
           ${intern.phone ?? ''},
+          ${intern.imageUrl || null},
           ${intern.projects ?? []}::text[],
           ${intern.manager ?? ''},
           ${intern.startDate || null},
@@ -62,6 +64,7 @@ export default async function handler(
           role = EXCLUDED.role,
           email = EXCLUDED.email,
           phone = EXCLUDED.phone,
+          image_url = EXCLUDED.image_url,
           projects = EXCLUDED.projects,
           manager = EXCLUDED.manager,
           start_date = EXCLUDED.start_date,
