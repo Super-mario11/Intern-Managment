@@ -76,11 +76,11 @@ export const seedIfEmpty = async () => {
         ${intern.role},
         ${intern.email},
         ${intern.phone},
-        ${intern.projects},
+        ${sql.array(intern.projects)},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${intern.skills},
+        ${sql.array(intern.skills)},
         ${intern.department}
       )
     `

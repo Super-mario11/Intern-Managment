@@ -35,10 +35,10 @@ export default function InternListPage() {
   const [error, setError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [totalInterns, setTotalInterns] = useState(0)
   const limit = 10 // Items per page
 
   useEffect(() => {
-    setLoading(true)
     fetch(`/api/interns?page=${currentPage}&limit=${limit}`)
       .then(async response => {
         if (!response.ok) {
@@ -50,6 +50,7 @@ export default function InternListPage() {
       .then(data => {
         setInterns(data?.interns || [])
         setTotalPages(data?.totalPages || 1)
+        setTotalInterns(data?.total || 0)
       })
       .catch(err => {
         setError(err instanceof Error ? err.message : 'Failed to load interns')
@@ -169,7 +170,7 @@ export default function InternListPage() {
             <Pagination
               page={currentPage}
               pageCount={totalPages}
-              total={interns.length}
+              total={totalInterns}
               pageSize={limit}
               onPageSizeChange={() => {}} // We are not changing page size for now, keeping it fixed at 10
               onPrev={() => setCurrentPage(prev => Math.max(1, prev - 1))}

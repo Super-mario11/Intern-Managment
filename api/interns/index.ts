@@ -1,7 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
   ensureTable,
-  seedIfEmpty,
   toIntern,
 } from '../_db.js'
 import type { DbIntern } from '../_db.js'
@@ -82,11 +81,11 @@ export default async function handler(
         ${role},
         ${email},
         ${phone ?? ''},
-        ${projects ?? []}::text[],
+        ${sql.array(projects ?? [])},
         ${manager ?? ''},
         ${startDate || null},
         ${performance ?? ''},
-        ${skills ?? []}::text[],
+        ${sql.array(skills ?? [])},
         ${department ?? ''}
       )
       RETURNING *

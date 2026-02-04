@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { ensureTable, getNextId, toIntern, toTextArray } from '../_db.js'
+import { ensureTable, toIntern } from '../_db.js'
 import type { DbIntern } from '../_db.js'
 import { requireAdminSession } from '../_auth.js'
 import { sql } from '@vercel/postgres'
@@ -40,21 +40,21 @@ export default async function handler(
 
     const saved = []
     for (const intern of interns) {
-      const id = intern.id || (await getNextId())
       const result = await sql`
         INSERT INTO interns (
-          id, name, role, email, phone, projects, manager, start_date, performance, skills, department
+          ${intern.id ? sql`id,` : sql``}
+          name, role, email, phone, projects, manager, start_date, performance, skills, department
         ) VALUES (
-          ${id},
+          ${intern.id ? sql`${intern.id},` : sql``}
           ${intern.name ?? ''},
           ${intern.role ?? ''},
           ${intern.email ?? ''},
           ${intern.phone ?? ''},
-          ${toTextArray(intern.projects ?? [])}::text[],
+          ${sql.array(intern.projects ?? [])},
           ${intern.manager ?? ''},
           ${intern.startDate || null},
           ${intern.performance ?? ''},
-          ${toTextArray(intern.skills ?? [])}::text[],
+          ${sql.array(intern.skills ?? [])},
           ${intern.department ?? ''}
         )
         ON CONFLICT (id) DO UPDATE SET
