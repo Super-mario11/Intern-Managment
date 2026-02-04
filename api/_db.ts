@@ -29,18 +29,12 @@ export type Intern = {
   department: string
 }
 
-const escapePgArrayValue = (value: string) =>
-  `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
 
-export const toTextArray = (values: string[]) => {
-  if (!values.length) return '{}' // empty array literal
-  return `{${values.map(escapePgArrayValue).join(',')}}`
-}
 
 export const ensureTable = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS interns (
-      id TEXT PRIMARY KEY,
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       name TEXT NOT NULL,
       role TEXT NOT NULL,
       email TEXT NOT NULL,
@@ -70,33 +64,23 @@ export const toIntern = (row: DbIntern): Intern => ({
   department: row.department ?? '',
 })
 
-export const getNextId = async () => {
-  const result = await sql`SELECT id FROM interns WHERE id LIKE 'INT-%' ORDER BY id DESC LIMIT 1`
-  const last = result.rows[0]?.id as string | undefined
-  if (!last) return 'INT-001'
-  const match = last.match(/INT-(\d+)/)
-  const next = match ? Number(match[1]) + 1 : 1
-  return `INT-${String(next).padStart(3, '0')}`
-}
-
 export const seedIfEmpty = async () => {
   const existing = await sql`SELECT COUNT(*)::int AS count FROM interns`
   if (existing.rows[0]?.count) return
   for (const intern of seedInterns) {
     await sql`
       INSERT INTO interns (
-        id, name, role, email, phone, projects, manager, start_date, performance, skills, department
+        name, role, email, phone, projects, manager, start_date, performance, skills, department
       ) VALUES (
-        ${intern.id},
         ${intern.name},
         ${intern.role},
         ${intern.email},
         ${intern.phone},
-        ${toTextArray(intern.projects)},
+        ${intern.projects},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${toTextArray(intern.skills)},
+        ${intern.skills},
         ${intern.department}
       )
     `

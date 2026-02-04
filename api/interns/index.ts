@@ -1,10 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
   ensureTable,
-  getNextId,
   seedIfEmpty,
   toIntern,
-  toTextArray,
 } from '../_db.js'
 import type { DbIntern } from '../_db.js'
 import { requireAdminSession } from '../_auth.js'
@@ -31,11 +29,25 @@ export default async function handler(
     await ensureTable()
 
     if (req.method === 'GET') {
-      await seedIfEmpty()
-      const result = await sql`SELECT * FROM interns ORDER BY id ASC`
+      const page = Number(req.query.page) || 1
+      const limit = Number(req.query.limit) || 10
+      const offset = (page - 1) * limit
+
+      const { rows: interns } = await sql`
+        SELECT * FROM interns
+        ORDER BY created_at DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `
+      const { rows: countResult } = await sql`SELECT COUNT(*)::int AS total FROM interns`
+      const totalInterns = countResult[0]?.total || 0
+      const totalPages = Math.ceil(totalInterns / limit)
+
       res.status(200).json({
         ok: true,
-        interns: result.rows.map(row => toIntern(row as DbIntern)),
+        interns: interns.map(row => toIntern(row as DbIntern)),
+        totalPages,
+        currentPage: page,
       })
       return
     }
@@ -62,21 +74,19 @@ export default async function handler(
         return
       }
 
-      const id = await getNextId()
-    const result = await sql`
+      const result = await sql`
       INSERT INTO interns (
-        id, name, role, email, phone, projects, manager, start_date, performance, skills, department
+        name, role, email, phone, projects, manager, start_date, performance, skills, department
       ) VALUES (
-        ${id},
         ${name},
         ${role},
         ${email},
         ${phone ?? ''},
-        ${toTextArray(projects ?? [])}::text[],
+        ${projects ?? []}::text[],
         ${manager ?? ''},
         ${startDate || null},
         ${performance ?? ''},
-        ${toTextArray(skills ?? [])}::text[],
+        ${skills ?? []}::text[],
         ${department ?? ''}
       )
       RETURNING *
