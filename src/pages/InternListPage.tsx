@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Intern } from '../types'
+import Pagination from '../components/Pagination'
 
 const formatDate = (value: string) => {
   if (!value) return ''
