@@ -46,6 +46,31 @@ export const ensureTable = async () => {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
+
+  await sql`
+    DO $$
+    BEGIN
+      IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'interns'
+          AND column_name = 'id'
+          AND data_type = 'uuid'
+      ) THEN
+        ALTER TABLE interns ALTER COLUMN id SET DEFAULT gen_random_uuid();
+      ELSIF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'interns'
+          AND column_name = 'id'
+          AND data_type IN ('text', 'character varying')
+      ) THEN
+        ALTER TABLE interns ALTER COLUMN id SET DEFAULT gen_random_uuid()::text;
+      END IF;
+    END $$;
+  `
 }
 
 export const toIntern = (row: DbIntern): Intern => ({
