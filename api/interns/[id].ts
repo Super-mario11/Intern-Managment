@@ -57,11 +57,11 @@ export default async function handler(
           email = ${email},
           phone = ${phone ?? ''},
           image_url = ${imageUrl || null},
-          projects = ${projects ?? []}::text[],
+          projects = ${sql.array(projects ?? [], 'text')},
           manager = ${manager ?? ''},
           start_date = ${startDate || null},
           performance = ${performance ?? ''},
-          skills = ${skills ?? []}::text[],
+          skills = ${sql.array(skills ?? [], 'text')},
           department = ${department ?? ''}
         WHERE id = ${internId}
         RETURNING *

@@ -106,11 +106,11 @@ export const seedIfEmpty = async () => {
         ${intern.email},
         ${intern.phone},
         ${intern.imageUrl || null},
-        ${intern.projects}::text[],
+        ${sql.array(intern.projects ?? [], 'text')},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${intern.skills}::text[],
+        ${sql.array(intern.skills ?? [], 'text')},
         ${intern.department}
       )
     `
