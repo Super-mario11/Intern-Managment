@@ -2,6 +2,17 @@ import crypto from 'crypto'
 import { parse, serialize } from 'cookie'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
+// Log DeprecationWarnings with stack traces to help identify the originating module
+if (typeof process !== 'undefined' && typeof process.on === 'function') {
+  process.on('warning', (warning: any) => {
+    if (warning && warning.name === 'DeprecationWarning') {
+      // Keep a concise, readable log in Vercel logs
+      console.warn('DeprecationWarning captured:', warning.message)
+      if (warning.stack) console.warn(warning.stack)
+    }
+  })
+}
+
 const SESSION_COOKIE = 'intern_admin_session'
 const SESSION_TTL_SECONDS = 60 * 60 * 8
 
