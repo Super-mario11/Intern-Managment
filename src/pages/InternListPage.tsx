@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Intern } from '../types'
 import Pagination from '../components/Pagination'
+import InternDetailsModal from '../components/InternDetailsModal'
 import { getInternImageUrl } from '../lib/internImages'
 
 const formatDate = (value: string) => {
@@ -73,10 +74,10 @@ export default function InternListPage() {
   }, [interns])
 
   return (
-    <div className="min-h-screen bg-zinc-100">
+    <div className="min-h-screen bg-gradient-to-br from-white via-amber-50/30 to-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <div className="mb-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 mb-3">
+          <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-1 mb-3 border border-amber-100">
             Directory
           </div>
           <h1 className="text-2xl sm:text-3xl font-semibold text-zinc-900">
@@ -87,10 +88,10 @@ export default function InternListPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block">
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block border border-amber-100">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px]">
-              <thead className="bg-zinc-50 text-xs text-zinc-500">
+              <thead className="bg-amber-50 text-xs text-amber-800">
                 <tr>
                   <th className="text-left px-6 py-3">ID</th>
                   <th className="text-left px-6 py-3">Name</th>
@@ -122,13 +123,13 @@ export default function InternListPage() {
                   rows.map(row => (
                     <tr
                       key={row.id}
-                      className="cursor-pointer hover:bg-zinc-50 transition"
+                      className="cursor-pointer hover:bg-amber-50/40 transition"
                       onClick={() => setSelected(row.intern)}
                     >
                       <td className="px-6 py-4 text-zinc-600">{row.id}</td>
                       <td className="px-6 py-4 font-medium text-zinc-900">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold overflow-hidden">
+                          <div className="w-9 h-9 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold overflow-hidden">
                             {row.imageUrl ? (
                               <img
                                 src={row.imageUrl}
@@ -161,26 +162,26 @@ export default function InternListPage() {
 
         <div className="grid gap-4 md:hidden">
           {loading ? (
-            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm border border-amber-100">
               Loading interns...
             </div>
           ) : error ? (
-            <div className="bg-white rounded-2xl p-5 text-sm text-red-600 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 text-sm text-red-600 shadow-sm border border-amber-100">
               {error}
             </div>
           ) : rows.length === 0 ? (
-            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm">
+            <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm border border-amber-100">
               No interns available yet. Add them in the Admin page.
             </div>
           ) : (
             rows.map(row => (
               <div
                 key={row.id}
-                className="bg-white rounded-2xl p-5 shadow-sm cursor-pointer hover:shadow-md transition"
+                className="bg-white rounded-2xl p-5 shadow-sm cursor-pointer hover:shadow-md transition border border-amber-100"
                 onClick={() => setSelected(row.intern)}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                  <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
                     {row.imageUrl ? (
                       <img
                         src={row.imageUrl}
@@ -206,10 +207,10 @@ export default function InternListPage() {
                 </div>
                 <div className="text-sm text-zinc-600">{row.email}</div>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  <span className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full">
+                  <span className="bg-amber-50 text-amber-800 px-2.5 py-1 rounded-full border border-amber-100">
                     {row.role}
                   </span>
-                  <span className="bg-zinc-100 text-zinc-600 px-2.5 py-1 rounded-full">
+                  <span className="bg-white text-zinc-600 px-2.5 py-1 rounded-full border border-amber-100">
                     {row.period}
                   </span>
                 </div>
@@ -232,120 +233,7 @@ export default function InternListPage() {
         )}
       </div>
 
-      {selected ? (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 px-4"
-          onClick={() => setSelected(null)}
-        >
-          <div
-            className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto overflow-hidden"
-            onClick={event => event.stopPropagation()}
-          >
-            <div className="border-b px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-semibold overflow-hidden">
-                  {selected.imageUrl || getInternImageUrl(selected.id) ? (
-                    <img
-                      src={selected.imageUrl || getInternImageUrl(selected.id)}
-                      alt={selected.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    selected.name
-                      .split(' ')
-                      .map(n => n[0])
-                      .slice(0, 2)
-                      .join('')
-                      .toUpperCase()
-                  )}
-                </div>
-                <div>
-                  <div className="text-sm text-zinc-500">{selected.id}</div>
-                  <div className="text-lg font-semibold text-zinc-900">
-                    {selected.name}
-                  </div>
-                </div>
-              </div>
-              <button
-                className="text-zinc-400 hover:text-zinc-600"
-                onClick={() => setSelected(null)}
-              >
-                x
-              </button>
-            </div>
-            <div className="px-6 py-5 space-y-4 text-sm text-zinc-700">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs text-zinc-500">Role</div>
-                  <div>{selected.role || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500">Email</div>
-                  <div>{selected.email || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500">Phone</div>
-                  <div>{selected.phone || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500">Department</div>
-                  <div>{selected.department || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500">Manager</div>
-                  <div>{selected.manager || '-'}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500">Start date</div>
-                  <div>{selected.startDate || '-'}</div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-xs text-zinc-500">Projects</div>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {selected.projects.length ? (
-                    selected.projects.map(project => (
-                      <span
-                        key={project}
-                        className="bg-zinc-100 text-zinc-700 px-2.5 py-1 rounded-full text-xs"
-                      >
-                        {project}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-zinc-500">-</span>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-xs text-zinc-500">Skills</div>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {selected.skills.length ? (
-                    selected.skills.map(skill => (
-                      <span
-                        key={skill}
-                        className="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full text-xs"
-                      >
-                        {skill}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-zinc-500">-</span>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-xs text-zinc-500">Performance</div>
-                <div>{selected.performance || 'No notes yet.'}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <InternDetailsModal intern={selected} onClose={() => setSelected(null)} />
     </div>
   )
 }

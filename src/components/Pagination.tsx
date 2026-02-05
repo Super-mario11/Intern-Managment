@@ -24,7 +24,7 @@ export default function Pagination({
       </div>
       <div className="flex flex-wrap gap-2 items-center">
         <select
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
           value={pageSize}
           onChange={e => onPageSizeChange(Number(e.target.value))}
         >
@@ -33,14 +33,14 @@ export default function Pagination({
           <option value={20}>20 per page</option>
         </select>
         <button
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm text-amber-900"
           onClick={onPrev}
           disabled={page <= 1}
         >
           Previous
         </button>
         <button
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm text-amber-900"
           onClick={onNext}
           disabled={page >= pageCount}
         >

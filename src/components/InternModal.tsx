@@ -24,12 +24,12 @@ export default function InternModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 px-4">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto">
-        <div className="border-b px-6 py-4 flex items-center justify-between">
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto border border-amber-100">
+        <div className="border-b border-amber-100 px-6 py-4 flex items-center justify-between">
           <div className="text-sm font-semibold text-zinc-900">
             {editingId ? 'Edit Intern' : 'Add Intern'}
           </div>
-          <button className="text-zinc-400" onClick={onClose}>
+          <button className="text-amber-500 hover:text-amber-700" onClick={onClose}>
             x
           </button>
         </div>
@@ -97,12 +97,12 @@ export default function InternModal({
             <div className="text-sm text-red-600">{formError}</div>
           ) : null}
         </div>
-        <div className="border-t px-6 py-4 flex flex-col sm:flex-row justify-end gap-2">
-          <button className="border rounded-lg px-4 py-2 text-sm" onClick={onClose}>
+        <div className="border-t border-amber-100 px-6 py-4 flex flex-col sm:flex-row justify-end gap-2">
+          <button className="border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-900" onClick={onClose}>
             Cancel
           </button>
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 transition text-white px-4 py-2 rounded-lg text-sm"
+            className="bg-amber-500 hover:bg-amber-600 transition text-white px-4 py-2 rounded-lg text-sm"
             onClick={onSubmit}
           >
             {editingId ? 'Save Changes' : 'Add Intern'}

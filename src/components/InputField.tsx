@@ -12,10 +12,10 @@ export default function InputField({
   placeholder,
 }: InputFieldProps) {
   return (
-    <label className="text-xs text-zinc-500 flex flex-col gap-1">
+    <label className="text-xs text-amber-800 flex flex-col gap-1">
       <span>{label}</span>
       <input
-        className="border rounded-xl px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+        className="border border-amber-200 rounded-xl px-3 py-2 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-amber-200"
         value={value}
         placeholder={placeholder}
         onChange={e => onChange(e.target.value)}

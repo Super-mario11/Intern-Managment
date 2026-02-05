@@ -34,10 +34,10 @@ export default function ControlsPanel({
   onSecondarySortKeyChange,
 }: ControlsPanelProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col gap-4">
+    <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col gap-4 border border-amber-100">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <input
-          className="bg-zinc-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200 w-full sm:w-1/2"
+          className="bg-amber-50/40 border border-amber-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-200 w-full sm:w-1/2"
           placeholder="Search interns, email, or department..."
           value={query}
           onChange={e => onQueryChange(e.target.value)}
@@ -45,7 +45,7 @@ export default function ControlsPanel({
 
         <div className="flex flex-wrap gap-2">
           <select
-            className="border rounded-xl px-3 py-2 text-sm"
+            className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
             value={roleFilter}
             onChange={e => onRoleFilterChange(e.target.value)}
           >
@@ -57,7 +57,7 @@ export default function ControlsPanel({
             ))}
           </select>
           <select
-            className="border rounded-xl px-3 py-2 text-sm"
+            className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
             value={projectFilter}
             onChange={e => onProjectFilterChange(e.target.value)}
           >
@@ -73,7 +73,7 @@ export default function ControlsPanel({
 
       <div className="flex flex-wrap gap-3 items-center">
         <select
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
           value={sortKey}
           onChange={e => onSortKeyChange(e.target.value as SortKey)}
         >
@@ -82,13 +82,13 @@ export default function ControlsPanel({
           <option value="projects">Sort by Projects</option>
         </select>
         <button
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm text-amber-900"
           onClick={onSortDirToggle}
         >
           {sortDir === 'asc' ? 'Ascending' : 'Descending'}
         </button>
         <select
-          className="border rounded-xl px-3 py-2 text-sm"
+          className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
           value={secondarySortKey}
           onChange={e => onSecondarySortKeyChange(e.target.value as SortKey)}
         >

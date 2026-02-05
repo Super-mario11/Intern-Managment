@@ -11,9 +11,9 @@ export default function Metrics({
 }: MetricsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <MetricCard label="Total Interns" value={totalInterns} tone="indigo" />
-      <MetricCard label="Active Projects" value={activeProjects} tone="emerald" />
-      <MetricCard label="Departments" value={departments} tone="amber" />
+      <MetricCard label="Total Interns" value={totalInterns} tone="amber" />
+      <MetricCard label="Active Projects" value={activeProjects} tone="gold" />
+      <MetricCard label="Departments" value={departments} tone="sand" />
     </div>
   )
 }
@@ -25,15 +25,15 @@ function MetricCard({
 }: {
   label: string
   value: number
-  tone: 'indigo' | 'emerald' | 'amber'
+  tone: 'amber' | 'gold' | 'sand'
 }) {
   const tones = {
-    indigo: 'from-indigo-50 to-white text-indigo-700',
-    emerald: 'from-emerald-50 to-white text-emerald-700',
-    amber: 'from-amber-50 to-white text-amber-700',
+    amber: 'from-amber-50 to-white text-amber-800',
+    gold: 'from-yellow-50 to-white text-yellow-800',
+    sand: 'from-amber-100/40 to-white text-amber-900',
   }
   return (
-    <div className={`bg-gradient-to-br ${tones[tone]} rounded-2xl shadow-sm p-5 border border-zinc-100`}>
+    <div className={`bg-gradient-to-br ${tones[tone]} rounded-2xl shadow-sm p-5 border border-amber-100`}>
       <div className="text-xs font-semibold">{label}</div>
       <div className="text-2xl sm:text-3xl font-semibold text-zinc-900 mt-2">
         {value}

@@ -9,6 +9,7 @@ import {
 import ControlsPanel from '../components/ControlsPanel'
 import InternModal from '../components/InternModal'
 import InternTable from '../components/InternTable'
+import InternDetailsModal from '../components/InternDetailsModal'
 import Metrics from '../components/Metrics'
 import Pagination from '../components/Pagination'
 import TopBar from '../components/TopBar'
@@ -35,7 +36,6 @@ export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
   const [interns, setInterns] = useState<Intern[]>([])
-  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
@@ -51,13 +51,20 @@ export default function AdminPage() {
   const [form, setForm] = useState({ ...emptyForm })
   const [formError, setFormError] = useState('')
   const [importError, setImportError] = useState('')
+  const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null)
   const [projectDrafts, setProjectDrafts] = useState<Record<string, string>>(
     {}
   )
   const [skillDrafts, setSkillDrafts] = useState<Record<string, string>>(
     {}
   )
+  const [toast, setToast] = useState('')
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  const showToast = (message: string) => {
+    setToast(message)
+    setTimeout(() => setToast(''), 2200)
+  }
 
   const fetchInterns = async () => {
     setLoading(true)
@@ -256,6 +263,7 @@ export default function AdminPage() {
     setInterns(prev =>
       prev.map(item => (item.id === updated.id ? updated : item))
     )
+    showToast('Saved changes.')
   }
 
   const submitForm = async () => {
@@ -332,7 +340,7 @@ export default function AdminPage() {
       return
     }
     setInterns(prev => prev.filter(item => item.id !== intern.id))
-    if (expandedId === intern.id) setExpandedId(null)
+    if (selectedIntern?.id === intern.id) setSelectedIntern(null)
   }
 
   const addProject = (intern: Intern) => {
@@ -344,7 +352,9 @@ export default function AdminPage() {
     setInterns(prev =>
       prev.map(item => (item.id === intern.id ? updated : item))
     )
-    persistIntern(updated).catch(() => null)
+    persistIntern(updated)
+      .then(() => showToast('Project updated.'))
+      .catch(() => null)
     setProjectDrafts(prev => ({ ...prev, [intern.id]: '' }))
   }
 
@@ -356,7 +366,9 @@ export default function AdminPage() {
     setInterns(prev =>
       prev.map(item => (item.id === intern.id ? updated : item))
     )
-    persistIntern(updated).catch(() => null)
+    persistIntern(updated)
+      .then(() => showToast('Project updated.'))
+      .catch(() => null)
   }
 
   const addSkill = (intern: Intern) => {
@@ -368,7 +380,9 @@ export default function AdminPage() {
     setInterns(prev =>
       prev.map(item => (item.id === intern.id ? updated : item))
     )
-    persistIntern(updated).catch(() => null)
+    persistIntern(updated)
+      .then(() => showToast('Skill updated.'))
+      .catch(() => null)
     setSkillDrafts(prev => ({ ...prev, [intern.id]: '' }))
   }
 
@@ -380,7 +394,9 @@ export default function AdminPage() {
     setInterns(prev =>
       prev.map(item => (item.id === intern.id ? updated : item))
     )
-    persistIntern(updated).catch(() => null)
+    persistIntern(updated)
+      .then(() => showToast('Skill updated.'))
+      .catch(() => null)
   }
 
   const triggerImport = () => {
@@ -466,7 +482,7 @@ export default function AdminPage() {
     fetch('/api/seed', { method: 'POST', credentials: 'same-origin' })
       .then(() => fetchInterns())
       .catch(() => null)
-    setExpandedId(null)
+    setSelectedIntern(null)
     setPage(1)
     setRoleFilter('all')
     setProjectFilter('all')
@@ -495,15 +511,15 @@ export default function AdminPage() {
 
   if (authStatus !== 'authed') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-emerald-50 flex items-center justify-center px-4 sm:px-6">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-100/40 flex items-center justify-center px-4 sm:px-6">
         <div className="w-full max-w-md">
-          <div className="bg-white/90 backdrop-blur shadow-lg rounded-2xl border border-white/60 p-6 sm:p-8 space-y-6">
+          <div className="bg-white/90 backdrop-blur shadow-lg rounded-2xl border border-amber-100 p-6 sm:p-8 space-y-6">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1">
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-1 border border-amber-100">
                 Admin Portal
               </div>
               <h1 className="text-2xl font-semibold text-zinc-900">
-                {authStatus === 'checking' ? 'Checking sessionâ€¦' : 'Secure access'}
+                {authStatus === 'checking' ? 'Checking...' : 'Secure access'}
               </h1>
               <p className="text-sm text-zinc-500">
                 {authStatus === 'checking'
@@ -515,8 +531,8 @@ export default function AdminPage() {
               <label className="text-xs text-zinc-500">Password</label>
               <input
                 type="password"
-                className="border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 w-full focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                className="border border-amber-200 rounded-xl px-4 py-3 text-sm text-zinc-800 w-full focus:outline-none focus:ring-2 focus:ring-amber-200"
+                placeholder="********"
                 value={password}
                 onChange={event => setPassword(event.target.value)}
                 onKeyDown={event => {
@@ -529,11 +545,11 @@ export default function AdminPage() {
               ) : null}
             </div>
             <button
-              className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white px-4 py-3 rounded-xl text-sm font-semibold disabled:opacity-70"
+              className="w-full bg-amber-500 hover:bg-amber-600 transition text-white px-4 py-3 rounded-xl text-sm font-semibold disabled:opacity-70"
               onClick={handleLogin}
               disabled={authStatus === 'checking'}
             >
-              {authStatus === 'checking' ? 'Checkingâ€¦' : 'Unlock Admin'}
+              {authStatus === 'checking' ? 'Checking...' : 'Unlock Admin'}
             </button>
             <div className="text-[11px] text-zinc-400">
               Contact your admin for credentials.
@@ -545,7 +561,14 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-100">
+    <div className="min-h-screen bg-gradient-to-br from-white via-amber-50/30 to-white">
+      {toast ? (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40">
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm px-4 py-2 rounded-full shadow-sm">
+            {toast}
+          </div>
+        </div>
+      ) : null}
       <TopBar
         onAdd={openAddModal}
         onImport={triggerImport}
@@ -596,24 +619,9 @@ export default function AdminPage() {
         <InternTable
           interns={paged}
           loading={loading}
-          expandedId={expandedId}
-          onToggleExpand={id =>
-            setExpandedId(prev => (prev === id ? null : id))
-          }
+          onView={intern => setSelectedIntern(intern)}
           onEdit={openEditModal}
           onDelete={deleteIntern}
-          projectDrafts={projectDrafts}
-          onProjectDraftChange={(id, value) =>
-            setProjectDrafts(prev => ({ ...prev, [id]: value }))
-          }
-          onAddProject={addProject}
-          onRemoveProject={removeProject}
-          skillDrafts={skillDrafts}
-          onSkillDraftChange={(id, value) =>
-            setSkillDrafts(prev => ({ ...prev, [id]: value }))
-          }
-          onAddSkill={addSkill}
-          onRemoveSkill={removeSkill}
         />
 
         <Pagination
@@ -636,9 +644,32 @@ export default function AdminPage() {
         onSubmit={submitForm}
         onFieldChange={handleFieldChange}
       />
+      <InternDetailsModal
+        intern={selectedIntern}
+        onClose={() => setSelectedIntern(null)}
+        onEdit={intern => {
+          setSelectedIntern(null)
+          openEditModal(intern)
+        }}
+        onDelete={deleteIntern}
+        projectDraft={selectedIntern ? projectDrafts[selectedIntern.id] ?? '' : ''}
+        onProjectDraftChange={value => {
+          if (!selectedIntern) return
+          setProjectDrafts(prev => ({ ...prev, [selectedIntern.id]: value }))
+        }}
+        onAddProject={addProject}
+        onRemoveProject={removeProject}
+        skillDraft={selectedIntern ? skillDrafts[selectedIntern.id] ?? '' : ''}
+        onSkillDraftChange={value => {
+          if (!selectedIntern) return
+          setSkillDrafts(prev => ({ ...prev, [selectedIntern.id]: value }))
+        }}
+        onAddSkill={addSkill}
+        onRemoveSkill={removeSkill}
+      />
 
       <button
-        className="fixed bottom-24 right-6 border border-zinc-200 bg-white text-zinc-700 text-xs px-4 py-2 rounded-full shadow-sm hover:border-zinc-300"
+        className="fixed bottom-24 right-6 border border-amber-200 bg-white text-amber-800 text-xs px-4 py-2 rounded-full shadow-sm hover:border-amber-300"
         onClick={handleLogout}
       >
         Log out
