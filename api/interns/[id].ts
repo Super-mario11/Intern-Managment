@@ -35,7 +35,7 @@ export default async function handler(
     const session = requireAdminSession(req, res)
     if (!session) return
 
-    if (req.method === 'PUT') {
+    if (req.method === 'PUT' || req.method === 'POST') {
       const {
         name,
         role,

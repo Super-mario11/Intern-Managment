@@ -231,7 +231,7 @@ export default function AdminPage() {
 
   const persistIntern = async (payload: Intern) => {
     const response = await fetch(`/api/interns/${payload.id}`, {
-      method: 'PUT',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
@@ -488,7 +488,7 @@ export default function AdminPage() {
                 Admin Portal
               </div>
               <h1 className="text-2xl font-semibold text-zinc-900">
-                {authStatus === 'checking' ? 'Checking session…' : 'Secure access'}
+                {authStatus === 'checking' ? 'Checking sessionâ€¦' : 'Secure access'}
               </h1>
               <p className="text-sm text-zinc-500">
                 {authStatus === 'checking'
@@ -501,7 +501,7 @@ export default function AdminPage() {
               <input
                 type="password"
                 className="border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-800 w-full focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 value={password}
                 onChange={event => setPassword(event.target.value)}
                 onKeyDown={event => {
@@ -518,7 +518,7 @@ export default function AdminPage() {
               onClick={handleLogin}
               disabled={authStatus === 'checking'}
             >
-              {authStatus === 'checking' ? 'Checking…' : 'Unlock Admin'}
+              {authStatus === 'checking' ? 'Checkingâ€¦' : 'Unlock Admin'}
             </button>
             <div className="text-[11px] text-zinc-400">
               Contact your admin for credentials.
