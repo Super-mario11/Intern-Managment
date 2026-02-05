@@ -1,4 +1,3 @@
-import React from 'react'
 import type { Intern } from '../types'
 import { getInternImageUrl } from '../lib/internImages'
 import { initials } from '../lib/internUtils'
