@@ -91,7 +91,7 @@ export default function AdminPage() {
   }
 
   const handleLogout = () => {
-    fetch('/api/logout', { method: 'POST' }).finally(() => {
+    fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }).finally(() => {
       setAuthStatus('unauth')
       setPassword('')
       setAuthError('')
@@ -231,7 +231,8 @@ export default function AdminPage() {
 
   const persistIntern = async (payload: Intern) => {
     const response = await fetch(`/api/interns/${payload.id}`, {
-      method: 'POST',
+      method: 'PUT',
+      credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
@@ -292,6 +293,7 @@ export default function AdminPage() {
       try {
         const response = await fetch('/api/interns', {
           method: 'POST',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
@@ -313,6 +315,7 @@ export default function AdminPage() {
     if (!confirm(`Delete ${intern.name}?`)) return
     const response = await fetch(`/api/interns/${intern.id}`, {
       method: 'DELETE',
+      credentials: 'same-origin',
     })
     if (!response.ok) {
       return
@@ -413,6 +416,7 @@ export default function AdminPage() {
         })
         fetch('/api/interns/bulk', {
           method: 'POST',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ interns: imported }),
         })
@@ -448,7 +452,7 @@ export default function AdminPage() {
   }
 
   const resetSampleData = () => {
-    fetch('/api/seed', { method: 'POST' })
+    fetch('/api/seed', { method: 'POST', credentials: 'same-origin' })
       .then(() => fetchInterns())
       .catch(() => null)
     setExpandedId(null)
