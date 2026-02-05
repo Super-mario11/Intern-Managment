@@ -230,12 +230,23 @@ export default function AdminPage() {
   }
 
   const persistIntern = async (payload: Intern) => {
-    const response = await fetch(`/api/interns/${payload.id}`, {
+    // Try PUT first; some deployments may reject PUT, so fall back to POST on 405
+    let response = await fetch(`/api/interns/${payload.id}`, {
       method: 'PUT',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
+
+    if (response.status === 405) {
+      response = await fetch(`/api/interns/${payload.id}`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+    }
+
     if (!response.ok) {
       const data = await response.json().catch(() => null)
       throw new Error(data?.error || 'Failed to update intern')
