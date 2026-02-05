@@ -94,11 +94,11 @@ export default async function handler(
           ${email},
           ${phone ?? ''},
           ${imageUrl || null},
-          ${sql.array(projects ?? [], 'text')},
+          ${projects ?? []}::text[],
           ${manager ?? ''},
           ${startDate || null},
           ${performance ?? ''},
-          ${sql.array(skills ?? [], 'text')},
+          ${skills ?? []}::text[],
           ${department ?? ''}
         )
         RETURNING *
