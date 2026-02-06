@@ -2,14 +2,12 @@ type TopBarProps = {
   onAdd: () => void
   onImport: () => void
   onExport: () => void
-  onReset: () => void
 }
 
 export default function TopBar({
   onAdd,
   onImport,
   onExport,
-  onReset,
 }: TopBarProps) {
   return (
     <div className="sticky top-0 z-20 bg-white/85 backdrop-blur border-b border-amber-100">
@@ -35,12 +33,6 @@ export default function TopBar({
             onClick={onExport}
           >
             Export CSV
-          </button>
-          <button
-            className="border border-amber-200 hover:border-amber-300 transition bg-white text-amber-800 px-3 py-2 rounded-full text-xs sm:text-sm shadow-sm"
-            onClick={onReset}
-          >
-            Reset Sample Data
           </button>
           <button
             className="bg-amber-500 hover:bg-amber-600 transition text-white px-4 py-2 rounded-full text-xs sm:text-sm shadow"

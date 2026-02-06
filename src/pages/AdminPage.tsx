@@ -91,7 +91,7 @@ export default function AdminPage() {
         }
         setAuthStatus('authed')
         setPassword('')
-        await fetchInterns()
+        await resetSampleData()
       })
       .catch(error => {
         setAuthError(error.message || 'Login failed')
@@ -113,7 +113,7 @@ export default function AdminPage() {
       .then(data => {
         if (data?.authed) {
           setAuthStatus('authed')
-          fetchInterns()
+          resetSampleData()
         } else {
           setAuthStatus('unauth')
         }
@@ -529,7 +529,6 @@ export default function AdminPage() {
         onAdd={openAddModal}
         onImport={triggerImport}
         onExport={handleExport}
-        onReset={resetSampleData}
         onLogout={handleLogout}
         fileInputRef={fileInputRef}
         onFileChange={handleImport}

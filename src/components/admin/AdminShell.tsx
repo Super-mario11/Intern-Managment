@@ -8,7 +8,6 @@ type AdminShellProps = {
   onAdd: () => void
   onImport: () => void
   onExport: () => void
-  onReset: () => void
   onLogout: () => void
   fileInputRef: RefObject<HTMLInputElement | null>
   onFileChange: (file: File | null) => void
@@ -20,7 +19,6 @@ export default function AdminShell({
   onAdd,
   onImport,
   onExport,
-  onReset,
   onLogout,
   fileInputRef,
   onFileChange,
@@ -33,7 +31,6 @@ export default function AdminShell({
         onAdd={onAdd}
         onImport={onImport}
         onExport={onExport}
-        onReset={onReset}
       />
 
       <input
