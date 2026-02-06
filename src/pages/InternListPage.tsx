@@ -129,7 +129,7 @@ export default function InternListPage() {
                       <td className="px-6 py-4 text-zinc-600">{row.id}</td>
                       <td className="px-6 py-4 font-medium text-zinc-900">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold overflow-hidden">
+                          <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-semibold overflow-hidden">
                             {row.imageUrl ? (
                               <img
                                 src={row.imageUrl}
@@ -181,7 +181,7 @@ export default function InternListPage() {
                 onClick={() => setSelected(row.intern)}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                  <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
                     {row.imageUrl ? (
                       <img
                         src={row.imageUrl}

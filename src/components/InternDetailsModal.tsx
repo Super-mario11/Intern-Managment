@@ -61,9 +61,9 @@ export default function InternDetailsModal({
         className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto overflow-hidden border border-amber-100"
         onClick={event => event.stopPropagation()}
       >
-        <div className="border-b border-amber-100 px-6 py-4 flex items-center justify-between bg-gradient-to-r from-amber-50/70 via-white to-white">
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
+        <div className="border-b border-amber-100 px-6 py-6 bg-gradient-to-r from-amber-50/70 via-white to-white relative">
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="w-40 h-40 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-3xl font-semibold overflow-hidden shadow-sm">
               {imageSrc ? (
                 <img
                   src={imageSrc}
@@ -75,15 +75,13 @@ export default function InternDetailsModal({
                 initials(intern.name)
               )}
             </div>
-            <div>
-              <div className="text-sm text-amber-700">{intern.id}</div>
-              <div className="text-lg font-semibold text-zinc-900">
-                {intern.name}
-              </div>
+            <div className="text-xs text-amber-700">{intern.id}</div>
+            <div className="text-xl font-semibold text-zinc-900">
+              {intern.name}
             </div>
           </div>
           <button
-            className="text-amber-500 hover:text-amber-700"
+            className="text-amber-500 hover:text-amber-700 absolute top-4 right-4"
             onClick={onClose}
           >
             x
