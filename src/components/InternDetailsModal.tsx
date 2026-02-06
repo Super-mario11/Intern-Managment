@@ -18,6 +18,7 @@ type InternDetailsModalProps = {
   onRemoveSkill?: (intern: Intern, skill: string) => void
 }
 
+// Read-only (or admin-enabled) modal for intern profile details and quick edits.
 export default function InternDetailsModal({
   intern,
   onClose,
@@ -61,6 +62,7 @@ export default function InternDetailsModal({
         className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto overflow-hidden border border-amber-100"
         onClick={event => event.stopPropagation()}
       >
+        {/* Profile header */}
         <div className="border-b border-amber-100 px-6 py-6 bg-gradient-to-r from-amber-50/70 via-white to-white relative">
           <div className="flex flex-col items-center text-center gap-3">
             <div className="w-40 h-40 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-3xl font-semibold overflow-hidden shadow-sm">
@@ -87,6 +89,7 @@ export default function InternDetailsModal({
             x
           </button>
         </div>
+        {/* Details, skills, projects, and admin actions */}
         <div className="px-6 py-5 space-y-5 text-sm text-zinc-700">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

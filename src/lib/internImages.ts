@@ -1,16 +1,6 @@
-const images = import.meta.glob('../assets/interns/*.{png,jpg,jpeg,webp}', {
-  eager: true,
-  import: 'default',
-})
-
-const imageMap: Record<string, string> = {}
-
-Object.entries(images).forEach(([path, url]) => {
-  const filename = path.split('/').pop()
-  if (!filename) return
-  const id = filename.split('.')[0]?.toUpperCase()
-  if (!id) return
-  imageMap[id] = url as string
-})
-
-export const getInternImageUrl = (id: string) => imageMap[id] || ''
+// Resolve a public image URL based on the intern id.
+// Public files live in /public/interns and are served from /interns/* at runtime.
+export const getInternImageUrl = (id: string) => {
+  if (!id) return ''
+  return `/interns/${id}.webp`
+}

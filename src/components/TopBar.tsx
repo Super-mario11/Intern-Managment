@@ -4,6 +4,7 @@ type TopBarProps = {
   onExport: () => void
 }
 
+// Admin header with import/export actions and primary CTA.
 export default function TopBar({
   onAdd,
   onImport,

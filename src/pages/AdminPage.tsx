@@ -32,6 +32,7 @@ const emptyForm: FormState = {
   department: '',
 }
 
+// Admin dashboard page: authentication, CRUD flows, and list management.
 export default function AdminPage() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('checking')
   const [password, setPassword] = useState('')
@@ -511,6 +512,7 @@ export default function AdminPage() {
   }
 
   if (authStatus !== 'authed') {
+    // Block access until session is verified.
     return (
       <AdminAuthScreen
         authStatus={authStatus}
@@ -524,6 +526,7 @@ export default function AdminPage() {
 
   return (
     <>
+      {/* Dashboard shell with actions + filters + table */}
       <AdminShell
         toast={toast}
         onAdd={openAddModal}
@@ -583,6 +586,7 @@ export default function AdminPage() {
         />
       </AdminShell>
 
+      {/* Create/Edit modal */}
       <InternModal
         show={showModal}
         editingId={editingId}
@@ -592,6 +596,7 @@ export default function AdminPage() {
         onSubmit={submitForm}
         onFieldChange={handleFieldChange}
       />
+      {/* Detail modal with optional admin actions */}
       <InternDetailsModal
         intern={selectedIntern}
         onClose={() => setSelectedIntern(null)}

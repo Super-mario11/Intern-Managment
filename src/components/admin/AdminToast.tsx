@@ -2,6 +2,7 @@ type AdminToastProps = {
   message: string
 }
 
+// Lightweight toast for admin actions (save/import/updates).
 export default function AdminToast({ message }: AdminToastProps) {
   if (!message) return null
 

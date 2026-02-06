@@ -2,6 +2,7 @@ type AdminLogoutButtonProps = {
   onLogout: () => void
 }
 
+// Floating logout button anchored to the admin view.
 export default function AdminLogoutButton({
   onLogout,
 }: AdminLogoutButtonProps) {

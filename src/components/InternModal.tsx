@@ -11,6 +11,7 @@ type InternModalProps = {
   onFieldChange: (field: keyof FormState, value: string) => void
 }
 
+// Modal form for creating or editing an intern record.
 export default function InternModal({
   show,
   editingId,
@@ -25,6 +26,7 @@ export default function InternModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-30 px-4">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-xl mx-auto border border-amber-100">
+        {/* Header */}
         <div className="border-b border-amber-100 px-6 py-4 flex items-center justify-between">
           <div className="text-sm font-semibold text-zinc-900">
             {editingId ? 'Edit Intern' : 'Add Intern'}
@@ -33,6 +35,7 @@ export default function InternModal({
             x
           </button>
         </div>
+        {/* Form fields */}
         <div className="px-6 py-4 space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <InputField
@@ -97,6 +100,7 @@ export default function InternModal({
             <div className="text-sm text-red-600">{formError}</div>
           ) : null}
         </div>
+        {/* Action buttons */}
         <div className="border-t border-amber-100 px-6 py-4 flex flex-col sm:flex-row justify-end gap-2">
           <button className="border border-amber-200 rounded-lg px-4 py-2 text-sm text-amber-900" onClick={onClose}>
             Cancel

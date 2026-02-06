@@ -10,6 +10,7 @@ type InternTableProps = {
   onDelete: (intern: Intern) => void
 }
 
+// Admin list table with desktop and mobile layouts.
 export default function InternTable({
   interns,
   loading,
@@ -19,6 +20,7 @@ export default function InternTable({
 }: InternTableProps) {
   return (
     <div className="space-y-4">
+      {/* Desktop table */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-amber-100 hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px]">
@@ -126,6 +128,7 @@ export default function InternTable({
         </div>
       </div>
 
+      {/* Mobile cards */}
       <div className="grid gap-4 md:hidden">
         {loading ? (
           <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm border border-amber-100">

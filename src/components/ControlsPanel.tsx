@@ -17,6 +17,7 @@ type ControlsPanelProps = {
   onSecondarySortKeyChange: (value: SortKey) => void
 }
 
+// Admin list controls: search, filter, and sort selections.
 export default function ControlsPanel({
   query,
   onQueryChange,

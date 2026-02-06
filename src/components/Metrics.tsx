@@ -4,6 +4,7 @@ type MetricsProps = {
   departments: number
 }
 
+// Dashboard KPI strip for quick admin insight.
 export default function Metrics({
   totalInterns,
   activeProjects,
@@ -18,6 +19,7 @@ export default function Metrics({
   )
 }
 
+// Single metric card with a tone-based background.
 function MetricCard({
   label,
   value,

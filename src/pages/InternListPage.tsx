@@ -23,14 +23,15 @@ const addDays = (value: string, days: number) => {
 }
 
 const getTimePeriod = (startDate: string) => {
-  if (!startDate) return '—'
+  if (!startDate) return '--'
   const endDate = addDays(startDate, 84)
   const startLabel = formatDate(startDate)
   const endLabel = formatDate(endDate)
-  if (!startLabel || !endLabel) return '—'
+  if (!startLabel || !endLabel) return '--'
   return `${startLabel} - ${endLabel}`
 }
 
+// Public intern directory with filters, pagination, and detail modal.
 export default function InternListPage() {
   const [interns, setInterns] = useState<Intern[]>([])
   const [loading, setLoading] = useState(true)
@@ -150,6 +151,7 @@ export default function InternListPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-amber-50/30 to-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        {/* Title and description */}
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-1 mb-3 border border-amber-100">
             Directory
@@ -162,6 +164,7 @@ export default function InternListPage() {
           </p>
         </div>
 
+        {/* Filters and search */}
         <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col gap-4 border border-amber-100 mb-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <input
@@ -211,6 +214,7 @@ export default function InternListPage() {
           </div>
         </div>
 
+        {/* Desktop table */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block border border-amber-100">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px]">
@@ -285,6 +289,7 @@ export default function InternListPage() {
           </div>
         </div>
 
+        {/* Mobile cards */}
         <div className="grid gap-4 md:hidden">
           {loading ? (
             <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm border border-amber-100">
@@ -345,6 +350,7 @@ export default function InternListPage() {
             ))
           )}
         </div>
+        {/* Pagination */}
         {pageCount > 1 && (
           <div className="mt-8">
             <Pagination
@@ -360,6 +366,7 @@ export default function InternListPage() {
         )}
       </div>
 
+      {/* Detail modal */}
       <InternDetailsModal intern={selected} onClose={() => setSelected(null)} />
     </div>
   )

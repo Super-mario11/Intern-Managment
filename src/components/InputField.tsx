@@ -5,6 +5,7 @@ type InputFieldProps = {
   placeholder?: string
 }
 
+// Shared labeled input used in the add/edit intern modal.
 export default function InputField({
   label,
   value,

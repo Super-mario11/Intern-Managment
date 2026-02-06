@@ -8,6 +8,7 @@ type PaginationProps = {
   onNext: () => void
 }
 
+// Shared pager with page size selection and nav controls.
 export default function Pagination({
   page,
   pageCount,

@@ -8,6 +8,7 @@ type AdminAuthScreenProps = {
   onSubmit: () => void
 }
 
+// Full-screen login gate for the admin dashboard.
 export default function AdminAuthScreen({
   authStatus,
   password,
