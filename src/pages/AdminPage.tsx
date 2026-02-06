@@ -12,7 +12,8 @@ import InternTable from '../components/InternTable'
 import InternDetailsModal from '../components/InternDetailsModal'
 import Metrics from '../components/Metrics'
 import Pagination from '../components/Pagination'
-import TopBar from '../components/TopBar'
+import AdminAuthScreen from '../components/admin/AdminAuthScreen'
+import AdminShell from '../components/admin/AdminShell'
 
 type AuthStatus = 'checking' | 'authed' | 'unauth'
 
@@ -511,80 +512,28 @@ export default function AdminPage() {
 
   if (authStatus !== 'authed') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-100/40 flex items-center justify-center px-4 sm:px-6">
-        <div className="w-full max-w-md">
-          <div className="bg-white/90 backdrop-blur shadow-lg rounded-2xl border border-amber-100 p-6 sm:p-8 space-y-6">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-1 border border-amber-100">
-                Admin Portal
-              </div>
-              <h1 className="text-2xl font-semibold text-zinc-900">
-                {authStatus === 'checking' ? 'Checking...' : 'Secure access'}
-              </h1>
-              <p className="text-sm text-zinc-500">
-                {authStatus === 'checking'
-                  ? 'Verifying your session credentials.'
-                  : 'Enter the admin password to continue managing interns.'}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs text-zinc-500">Password</label>
-              <input
-                type="password"
-                className="border border-amber-200 rounded-xl px-4 py-3 text-sm text-zinc-800 w-full focus:outline-none focus:ring-2 focus:ring-amber-200"
-                placeholder="********"
-                value={password}
-                onChange={event => setPassword(event.target.value)}
-                onKeyDown={event => {
-                  if (event.key === 'Enter') handleLogin()
-                }}
-                disabled={authStatus === 'checking'}
-              />
-              {authError ? (
-                <div className="text-xs text-red-600">{authError}</div>
-              ) : null}
-            </div>
-            <button
-              className="w-full bg-amber-500 hover:bg-amber-600 transition text-white px-4 py-3 rounded-xl text-sm font-semibold disabled:opacity-70"
-              onClick={handleLogin}
-              disabled={authStatus === 'checking'}
-            >
-              {authStatus === 'checking' ? 'Checking...' : 'Unlock Admin'}
-            </button>
-            <div className="text-[11px] text-zinc-400">
-              Contact your admin for credentials.
-            </div>
-          </div>
-        </div>
-      </div>
+      <AdminAuthScreen
+        authStatus={authStatus}
+        password={password}
+        authError={authError}
+        onPasswordChange={setPassword}
+        onSubmit={handleLogin}
+      />
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-amber-50/30 to-white">
-      {toast ? (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40">
-          <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm px-4 py-2 rounded-full shadow-sm">
-            {toast}
-          </div>
-        </div>
-      ) : null}
-      <TopBar
+    <>
+      <AdminShell
+        toast={toast}
         onAdd={openAddModal}
         onImport={triggerImport}
         onExport={handleExport}
         onReset={resetSampleData}
-      />
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".csv"
-        className="hidden"
-        onChange={e => handleImport(e.target.files?.[0] ?? null)}
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        onLogout={handleLogout}
+        fileInputRef={fileInputRef}
+        onFileChange={handleImport}
+      >
         <Metrics
           totalInterns={interns.length}
           activeProjects={interns.reduce((s, i) => s + i.projects.length, 0)}
@@ -633,7 +582,7 @@ export default function AdminPage() {
           onPrev={() => setPage(p => Math.max(1, p - 1))}
           onNext={() => setPage(p => Math.min(pageCount, p + 1))}
         />
-      </div>
+      </AdminShell>
 
       <InternModal
         show={showModal}
@@ -667,13 +616,6 @@ export default function AdminPage() {
         onAddSkill={addSkill}
         onRemoveSkill={removeSkill}
       />
-
-      <button
-        className="fixed bottom-24 right-6 border border-amber-200 bg-white text-amber-800 text-xs px-4 py-2 rounded-full shadow-sm hover:border-amber-300"
-        onClick={handleLogout}
-      >
-        Log out
-      </button>
-    </div>
+    </>
   )
 }
