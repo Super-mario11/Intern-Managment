@@ -33,8 +33,10 @@ export default async function handler(
 
     if (req.method === 'GET') {
       await seedIfEmpty()
-      const page = Number(req.query.page) || 1
-      const limit = Number(req.query.limit) || 10
+      const normalizeQueryParam = (value?: string | string[]) =>
+        Array.isArray(value) ? value[0] : value
+      const page = Number(normalizeQueryParam(req.query.page)) || 1
+      const limit = Number(normalizeQueryParam(req.query.limit)) || 10
       const offset = (page - 1) * limit
 
       const { rows: interns } = await sql`
