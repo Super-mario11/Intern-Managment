@@ -29,7 +29,7 @@ export const seedInterns = [
   },
   {
     id: 'ID03',
-    name: '',
+    name: 'Gabriel',
     role: 'Fullstack Intern',
     email: 'clara.lee@example.com',
     phone: '(555) 345-6789',
@@ -43,7 +43,7 @@ export const seedInterns = [
   },
   {
     id: 'ID04',
-    name: 'Diego Alvarez',
+    name: 'Karen',
     role: 'Data Intern',
     email: 'diego.alvarez@example.com',
     phone: '(555) 456-7890',
