@@ -92,8 +92,13 @@ export const toIntern = (row: DbIntern): Intern => ({
   department: row.department ?? '',
 })
 
-export const toTextArrayParam = (value?: string[]) =>
-  sql.array(value ?? [], 'text')
+const escapeArrayItem = (value: string) =>
+  value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+
+export const toTextArrayLiteral = (value?: string[]) => {
+  const items = (value ?? []).map(item => `"${escapeArrayItem(item)}"`)
+  return `{${items.join(',')}}`
+}
 
 export const seedIfEmpty = async () => {
   const existing = await sql`SELECT COUNT(*)::int AS count FROM interns`
@@ -109,11 +114,11 @@ export const seedIfEmpty = async () => {
         ${intern.email},
         ${intern.phone},
         ${intern.imageUrl || null},
-        ${toTextArrayParam(intern.projects)},
+        ${toTextArrayLiteral(intern.projects)}::text[],
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${toTextArrayParam(intern.skills)},
+        ${toTextArrayLiteral(intern.skills)}::text[],
         ${intern.department}
       )
     `

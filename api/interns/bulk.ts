@@ -6,7 +6,7 @@ import {
   formatInternId,
   getMaxInternIdNumber,
   toIntern,
-  toTextArrayParam,
+  toTextArrayLiteral,
 } from '../_db.js'
 import type { DbIntern } from '../_db.js'
 
@@ -61,11 +61,11 @@ export default async function handler(
           ${intern.email ?? ''},
           ${intern.phone ?? ''},
           ${intern.imageUrl || null},
-          ${toTextArrayParam(intern.projects)},
+          ${toTextArrayLiteral(intern.projects)}::text[],
           ${intern.manager ?? ''},
           ${intern.startDate || null},
           ${intern.performance ?? ''},
-          ${toTextArrayParam(intern.skills)},
+          ${toTextArrayLiteral(intern.skills)}::text[],
           ${intern.department ?? ''}
         )
         ON CONFLICT (id) DO UPDATE SET
