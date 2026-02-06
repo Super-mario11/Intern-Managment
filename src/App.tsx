@@ -26,9 +26,7 @@ export default function App() {
               Internship Portal
             </div>
           </div>
-          <div className="text-xs text-zinc-500">
-            Admin controls and intern directory
-          </div>
+          
           <div className="flex flex-wrap gap-2">
             <NavLink
               to="/admin"
@@ -58,8 +56,8 @@ export default function App() {
             Internship Portal
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-            <span>Contact: hr@internship-portal.com</span>
-            <span>Phone: (555) 555-0199</span>
+            <span>Contact: excellencegroupofinstitutes@gmail.com</span>
+            <span>Phone: +91 8557081922, +91 9115112585</span>
           </div>
         </div>
       </footer>
