@@ -45,7 +45,7 @@ export default function AdminPage() {
   const [roleFilter, setRoleFilter] = useState('all')
   const [projectFilter, setProjectFilter] = useState('all')
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
