@@ -36,13 +36,15 @@ export default function InternListPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalInterns, setTotalInterns] = useState(0)
+  const [pageSize, setPageSize] = useState(20)
+  const [query, setQuery] = useState('')
+  const [roleFilter, setRoleFilter] = useState('all')
+  const [departmentFilter, setDepartmentFilter] = useState('all')
   const [selected, setSelected] = useState<Intern | null>(null)
-  const limit = 20 // Items per page
 
   useEffect(() => {
-    fetch(`/api/interns?page=${currentPage}&limit=${limit}`)
+    setLoading(true)
+    fetch(`/api/interns?limit=1000`)
       .then(async response => {
         if (!response.ok) {
           const data = await response.json().catch(() => null)
@@ -52,17 +54,89 @@ export default function InternListPage() {
       })
       .then(data => {
         setInterns(data?.interns || [])
-        setTotalPages(data?.totalPages || 1)
-        setTotalInterns(data?.total || 0)
       })
       .catch(err => {
         setError(err instanceof Error ? err.message : 'Failed to load interns')
       })
       .finally(() => setLoading(false))
-  }, [currentPage, limit])
+  }, [])
+
+  const roleOptions = useMemo(() => {
+    const set = new Set(interns.map(intern => intern.role))
+    return Array.from(set).sort()
+  }, [interns])
+
+  const departmentOptions = useMemo(() => {
+    const set = new Set(interns.map(intern => intern.department).filter(Boolean))
+    return Array.from(set).sort()
+  }, [interns])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const matches = (value: string) => value.toLowerCase().includes(q)
+
+    return interns.filter(intern => {
+      if (roleFilter !== 'all' && intern.role !== roleFilter) return false
+      if (
+        departmentFilter !== 'all' &&
+        intern.department !== departmentFilter
+      )
+        return false
+      if (!q) return true
+      return [
+        intern.name,
+        intern.email,
+        intern.role,
+        intern.id,
+        intern.department,
+      ]
+        .filter(Boolean)
+        .some(matches)
+    })
+  }, [interns, query, roleFilter, departmentFilter])
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const pageSafe = Math.min(currentPage, pageCount)
+  const paged = filtered.slice(
+    (pageSafe - 1) * pageSize,
+    pageSafe * pageSize
+  )
+
+  useEffect(() => {
+    if (currentPage > pageCount) {
+      setCurrentPage(pageCount)
+    }
+  }, [currentPage, pageCount])
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value)
+    setCurrentPage(1)
+  }
+
+  const handleRoleFilterChange = (value: string) => {
+    setRoleFilter(value)
+    setCurrentPage(1)
+  }
+
+  const handleDepartmentFilterChange = (value: string) => {
+    setDepartmentFilter(value)
+    setCurrentPage(1)
+  }
+
+  const handlePageSizeChange = (value: number) => {
+    setPageSize(value)
+    setCurrentPage(1)
+  }
+
+  const clearFilters = () => {
+    setQuery('')
+    setRoleFilter('all')
+    setDepartmentFilter('all')
+    setCurrentPage(1)
+  }
 
   const rows = useMemo(() => {
-    return interns.map(intern => ({
+    return paged.map(intern => ({
       id: intern.id,
       name: intern.name,
       email: intern.email,
@@ -71,7 +145,7 @@ export default function InternListPage() {
       intern,
       period: getTimePeriod(intern.startDate),
     }))
-  }, [interns])
+  }, [paged])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-amber-50/30 to-white">
@@ -86,6 +160,55 @@ export default function InternListPage() {
           <p className="text-sm text-zinc-500">
             Name, email, role, and internship time period.
           </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5 flex flex-col gap-4 border border-amber-100 mb-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <input
+              className="bg-amber-50/40 border border-amber-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-200 w-full sm:w-1/2"
+              placeholder="Search by name, email, role, or department..."
+              value={query}
+              onChange={e => handleQueryChange(e.target.value)}
+            />
+
+            <div className="flex flex-wrap gap-2">
+              <select
+                className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
+                value={roleFilter}
+                onChange={e => handleRoleFilterChange(e.target.value)}
+              >
+                <option value="all">All Roles</option>
+                {roleOptions.map(role => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="border border-amber-200 rounded-xl px-3 py-2 text-sm"
+                value={departmentFilter}
+                onChange={e => handleDepartmentFilterChange(e.target.value)}
+              >
+                <option value="all">All Departments</option>
+                {departmentOptions.map(department => (
+                  <option key={department} value={department}>
+                    {department}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="border border-amber-200 rounded-xl px-3 py-2 text-sm text-amber-900"
+                onClick={clearFilters}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <div className="text-xs text-zinc-500">
+            Showing {filtered.length} intern
+            {filtered.length === 1 ? '' : 's'}
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block border border-amber-100">
@@ -116,7 +239,9 @@ export default function InternListPage() {
                 ) : rows.length === 0 ? (
                   <tr>
                     <td className="px-6 py-6 text-zinc-500" colSpan={5}>
-                      No interns available yet. Add them in the Admin page.
+                      {interns.length === 0
+                        ? 'No interns available yet. Add them in the Admin page.'
+                        : 'No interns match your filters.'}
                     </td>
                   </tr>
                 ) : (
@@ -171,7 +296,9 @@ export default function InternListPage() {
             </div>
           ) : rows.length === 0 ? (
             <div className="bg-white rounded-2xl p-5 text-sm text-zinc-500 shadow-sm border border-amber-100">
-              No interns available yet. Add them in the Admin page.
+              {interns.length === 0
+                ? 'No interns available yet. Add them in the Admin page.'
+                : 'No interns match your filters.'}
             </div>
           ) : (
             rows.map(row => (
@@ -218,16 +345,16 @@ export default function InternListPage() {
             ))
           )}
         </div>
-        {totalPages > 1 && (
+        {pageCount > 1 && (
           <div className="mt-8">
             <Pagination
-              page={currentPage}
-              pageCount={totalPages}
-              total={totalInterns}
-              pageSize={limit}
-              onPageSizeChange={() => {}} // We are not changing page size for now, keeping it fixed at 10
+              page={pageSafe}
+              pageCount={pageCount}
+              total={filtered.length}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
               onPrev={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-              onNext={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onNext={() => setCurrentPage(prev => Math.min(pageCount, prev + 1))}
             />
           </div>
         )}
