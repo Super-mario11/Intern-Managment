@@ -28,8 +28,8 @@ export default function Pagination({
           value={pageSize}
           onChange={e => onPageSizeChange(Number(e.target.value))}
         >
-          <option value={5}>5 per page</option>
           <option value={10}>10 per page</option>
+          <option value={5}>5 per page</option>
           <option value={20}>20 per page</option>
         </select>
         <button

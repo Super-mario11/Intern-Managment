@@ -39,7 +39,7 @@ export default function InternListPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [totalInterns, setTotalInterns] = useState(0)
   const [selected, setSelected] = useState<Intern | null>(null)
-  const limit = 10 // Items per page
+  const limit = 20 // Items per page
 
   useEffect(() => {
     fetch(`/api/interns?page=${currentPage}&limit=${limit}`)
