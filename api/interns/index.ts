@@ -7,6 +7,7 @@ import {
   getMaxInternIdNumber,
   seedIfEmpty,
   toIntern,
+  toTextArrayParam,
 } from '../_db.js'
 import type { DbIntern } from '../_db.js'
 
@@ -96,11 +97,11 @@ export default async function handler(
           ${email},
           ${phone ?? ''},
           ${imageUrl || null},
-          ${projects ?? []}::text[],
+          ${toTextArrayParam(projects)},
           ${manager ?? ''},
           ${startDate || null},
           ${performance ?? ''},
-          ${skills ?? []}::text[],
+          ${toTextArrayParam(skills)},
           ${department ?? ''}
         )
         RETURNING *

@@ -55,7 +55,7 @@ export default function InternTable({
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                          <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
                             {imageSrc ? (
                               <img
                                 src={imageSrc}
@@ -148,7 +148,7 @@ export default function InternTable({
                   onClick={() => onView(intern)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
+                    <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
                       {imageSrc ? (
                         <img
                           src={imageSrc}

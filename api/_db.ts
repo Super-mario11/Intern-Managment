@@ -92,6 +92,9 @@ export const toIntern = (row: DbIntern): Intern => ({
   department: row.department ?? '',
 })
 
+export const toTextArrayParam = (value?: string[]) =>
+  sql.array(value ?? [], 'text')
+
 export const seedIfEmpty = async () => {
   const existing = await sql`SELECT COUNT(*)::int AS count FROM interns`
   if (existing.rows[0]?.count) return
@@ -106,11 +109,11 @@ export const seedIfEmpty = async () => {
         ${intern.email},
         ${intern.phone},
         ${intern.imageUrl || null},
-        ${intern.projects ?? []}::text[],
+        ${toTextArrayParam(intern.projects)},
         ${intern.manager},
         ${intern.startDate || null},
         ${intern.performance},
-        ${intern.skills ?? []}::text[],
+        ${toTextArrayParam(intern.skills)},
         ${intern.department}
       )
     `

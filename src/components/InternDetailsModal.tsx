@@ -63,7 +63,7 @@ export default function InternDetailsModal({
       >
         <div className="border-b border-amber-100 px-6 py-4 flex items-center justify-between bg-gradient-to-r from-amber-50/70 via-white to-white">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
+            <div className="w-16 h-16 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-semibold overflow-hidden">
               {imageSrc ? (
                 <img
                   src={imageSrc}
