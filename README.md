@@ -52,6 +52,8 @@ Set these in `.env` or `.env.local` (and in Vercel project settings for deployme
 - `SESSION_SECRET`
 - `ADMIN_PASSWORD_HASH`
 - `ADMIN_RECOVERY_EMAIL` (optional, used to validate forgot-password requests)
+- `RESEND_API_KEY` (required for sending reset email)
+- `RESEND_FROM_EMAIL` (verified Resend sender)
 
 The first login uses `ADMIN_PASSWORD_HASH` from env as bootstrap. After that, admin credentials are persisted in Postgres and can be updated via the reset flow.
 
