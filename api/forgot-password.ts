@@ -39,18 +39,19 @@ export default async function handler(
 
   res.setHeader('Cache-Control', 'no-store')
 
-  const { email } = (req.body || {}) as { email?: string }
   const expectedEmail = process.env.ADMIN_RECOVERY_EMAIL?.trim().toLowerCase()
-  const providedEmail = email?.trim().toLowerCase()
-
-  if (expectedEmail && providedEmail !== expectedEmail) {
-    res.status(200).json({ ok: true, message: GENERIC_MESSAGE })
+  if (!expectedEmail) {
+    res.status(500).json({ ok: false, error: 'ADMIN_RECOVERY_EMAIL is not configured' })
     return
   }
 
   const token = await createPasswordResetToken()
-  if (expectedEmail) {
-    await sendResetTokenEmail(expectedEmail, token).catch(() => null)
+  const sent = await sendResetTokenEmail(expectedEmail, token).catch(
+    () => false
+  )
+  if (!sent && process.env.NODE_ENV === 'production') {
+    res.status(500).json({ ok: false, error: 'Failed to send reset email' })
+    return
   }
 
   const payload: { ok: true; message: string; resetToken?: string } = {

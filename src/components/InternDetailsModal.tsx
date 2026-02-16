@@ -33,25 +33,23 @@ export default function InternDetailsModal({
   onAddSkill,
   onRemoveSkill,
 }: InternDetailsModalProps) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+  useEffect(() => {
+    if (!intern) return
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [intern, onClose])
+
   if (!intern) return null
 
   const imageSrc = intern.imageUrl || getInternImageUrl(intern.id)
   const showAdminActions = Boolean(onEdit || onDelete)
   const showProjectTools = Boolean(onAddProject || onRemoveProject)
   const showSkillTools = Boolean(onAddSkill || onRemoveSkill)
-  const [confirmingDelete, setConfirmingDelete] = useState(false)
-
-  useEffect(() => {
-    setConfirmingDelete(false)
-  }, [intern.id])
-
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
 
   return (
     <div

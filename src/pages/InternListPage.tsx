@@ -44,7 +44,6 @@ export default function InternListPage() {
   const [selected, setSelected] = useState<Intern | null>(null)
 
   useEffect(() => {
-    setLoading(true)
     fetch(`/api/interns?limit=1000`)
       .then(async response => {
         if (!response.ok) {
@@ -102,12 +101,6 @@ export default function InternListPage() {
     (pageSafe - 1) * pageSize,
     pageSafe * pageSize
   )
-
-  useEffect(() => {
-    if (currentPage > pageCount) {
-      setCurrentPage(pageCount)
-    }
-  }, [currentPage, pageCount])
 
   const handleQueryChange = (value: string) => {
     setQuery(value)
@@ -367,7 +360,11 @@ export default function InternListPage() {
       </div>
 
       {/* Detail modal */}
-      <InternDetailsModal intern={selected} onClose={() => setSelected(null)} />
+      <InternDetailsModal
+        key={selected?.id ?? 'none'}
+        intern={selected}
+        onClose={() => setSelected(null)}
+      />
     </div>
   )
 }

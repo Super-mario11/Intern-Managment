@@ -5,7 +5,7 @@ import { sql } from '@vercel/postgres'
 
 // Log DeprecationWarnings with stack traces to help identify the originating module
 if (typeof process !== 'undefined' && typeof process.on === 'function') {
-  process.on('warning', (warning: any) => {
+  process.on('warning', (warning: Error) => {
     if (warning && warning.name === 'DeprecationWarning') {
       // Keep a concise, readable log in Vercel logs
       console.warn('DeprecationWarning captured:', warning.message)

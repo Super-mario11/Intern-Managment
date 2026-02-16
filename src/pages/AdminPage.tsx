@@ -38,7 +38,6 @@ export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
   const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [recoveryEmail, setRecoveryEmail] = useState('')
   const [resetToken, setResetToken] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
@@ -124,7 +123,6 @@ export default function AdminPage() {
       const response = await fetch('/api/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: recoveryEmail.trim() }),
       })
       const data = await response.json().catch(() => null)
       if (!response.ok) {
@@ -201,7 +199,14 @@ export default function AdminPage() {
       .then(data => {
         if (data?.authed) {
           setAuthStatus('authed')
-          resetSampleData()
+          fetch('/api/seed', { method: 'POST', credentials: 'same-origin' })
+            .then(() => fetchInterns())
+            .catch(() => null)
+          setSelectedIntern(null)
+          setPage(1)
+          setRoleFilter('all')
+          setProjectFilter('all')
+          setQuery('')
         } else {
           setAuthStatus('unauth')
         }
@@ -606,7 +611,6 @@ export default function AdminPage() {
         password={password}
         authError={authError}
         showForgotPassword={showForgotPassword}
-        recoveryEmail={recoveryEmail}
         resetToken={resetToken}
         newPassword={newPassword}
         confirmNewPassword={confirmNewPassword}
@@ -619,7 +623,6 @@ export default function AdminPage() {
           setResetError('')
           setResetMessage('')
         }}
-        onRecoveryEmailChange={setRecoveryEmail}
         onResetTokenChange={setResetToken}
         onNewPasswordChange={setNewPassword}
         onConfirmNewPasswordChange={setConfirmNewPassword}
@@ -704,6 +707,7 @@ export default function AdminPage() {
       />
       {/* Detail modal with optional admin actions */}
       <InternDetailsModal
+        key={selectedIntern?.id ?? 'none'}
         intern={selectedIntern}
         onClose={() => setSelectedIntern(null)}
         onEdit={intern => {

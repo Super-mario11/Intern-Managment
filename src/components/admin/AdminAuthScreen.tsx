@@ -5,7 +5,6 @@ type AdminAuthScreenProps = {
   password: string
   authError: string
   showForgotPassword: boolean
-  recoveryEmail: string
   resetToken: string
   newPassword: string
   confirmNewPassword: string
@@ -14,7 +13,6 @@ type AdminAuthScreenProps = {
   resetLoading: boolean
   onPasswordChange: (value: string) => void
   onToggleForgotPassword: () => void
-  onRecoveryEmailChange: (value: string) => void
   onResetTokenChange: (value: string) => void
   onNewPasswordChange: (value: string) => void
   onConfirmNewPasswordChange: (value: string) => void
@@ -29,7 +27,6 @@ export default function AdminAuthScreen({
   password,
   authError,
   showForgotPassword,
-  recoveryEmail,
   resetToken,
   newPassword,
   confirmNewPassword,
@@ -38,7 +35,6 @@ export default function AdminAuthScreen({
   resetLoading,
   onPasswordChange,
   onToggleForgotPassword,
-  onRecoveryEmailChange,
   onResetTokenChange,
   onNewPasswordChange,
   onConfirmNewPasswordChange,
@@ -90,15 +86,6 @@ export default function AdminAuthScreen({
           </div>
           {showForgotPassword ? (
             <div className="space-y-3 border border-amber-100 rounded-xl p-4 bg-amber-50/50">
-              <label className="text-xs text-zinc-500">Recovery email</label>
-              <input
-                type="email"
-                className="border border-amber-200 rounded-xl px-4 py-3 text-sm text-zinc-800 w-full focus:outline-none focus:ring-2 focus:ring-amber-200"
-                placeholder="admin@example.com"
-                value={recoveryEmail}
-                onChange={event => onRecoveryEmailChange(event.target.value)}
-                disabled={resetLoading}
-              />
               <button
                 className="w-full bg-white border border-amber-300 hover:bg-amber-100 transition text-amber-800 px-4 py-3 rounded-xl text-sm font-semibold disabled:opacity-70"
                 onClick={onRequestReset}
