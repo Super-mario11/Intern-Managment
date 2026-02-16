@@ -20,6 +20,8 @@ The app has two main experiences: a public intern directory and a protected admi
 - `/api/session` - Session check
 - `/api/login` - Admin login
 - `/api/logout` - Admin logout
+- `/api/forgot-password` - Request a password reset token
+- `/api/reset-password` - Reset admin password with token
 - `/api/seed` - Reset and seed sample data
 - `/api/interns` - List or create interns
 - `/api/interns/[id]` - Read, update, or delete an intern
@@ -49,6 +51,9 @@ Set these in `.env` or `.env.local` (and in Vercel project settings for deployme
 - `POSTGRES_URL`
 - `SESSION_SECRET`
 - `ADMIN_PASSWORD_HASH`
+- `ADMIN_RECOVERY_EMAIL` (optional, used to validate forgot-password requests)
+
+The first login uses `ADMIN_PASSWORD_HASH` from env as bootstrap. After that, admin credentials are persisted in Postgres and can be updated via the reset flow.
 
 Generate a password hash locally:
 - `node -e "console.log(require('bcryptjs').hashSync('your-password', 12))"`

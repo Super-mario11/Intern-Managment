@@ -1,12 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import bcrypt from 'bcryptjs'
-import { createSessionToken, setSessionCookie } from './_auth.js'
-
-const getPasswordHash = () => {
-  const hash = process.env.ADMIN_PASSWORD_HASH
-  if (!hash) throw new Error('ADMIN_PASSWORD_HASH is not set')
-  return hash
-}
+import {
+  createSessionToken,
+  getAdminPasswordHash,
+  setSessionCookie,
+} from './_auth.js'
 
 export default async function handler(
   req: VercelRequest,
@@ -25,7 +23,7 @@ export default async function handler(
     return
   }
 
-  const hash = getPasswordHash()
+  const hash = await getAdminPasswordHash()
   const match = await bcrypt.compare(password, hash)
   if (!match) {
     res.status(401).json({ ok: false, error: 'Invalid credentials' })

@@ -37,6 +37,14 @@ export default function AdminPage() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('checking')
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [recoveryEmail, setRecoveryEmail] = useState('')
+  const [resetToken, setResetToken] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [resetError, setResetError] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
   const [interns, setInterns] = useState<Intern[]>([])
   const [query, setQuery] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('name')
@@ -106,6 +114,85 @@ export default function AdminPage() {
       setAuthError('')
       setInterns([])
     })
+  }
+
+  const handleRequestReset = async () => {
+    setResetError('')
+    setResetMessage('')
+    setResetLoading(true)
+    try {
+      const response = await fetch('/api/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: recoveryEmail.trim() }),
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(data?.error || 'Failed to request reset token')
+      }
+      if (data?.resetToken) {
+        setResetToken(data.resetToken)
+        setResetMessage(
+          'Reset token generated. In production, this should be sent by email.'
+        )
+      } else {
+        setResetMessage(
+          data?.message || 'If your details are valid, a reset token was sent.'
+        )
+      }
+    } catch (error) {
+      setResetError(
+        error instanceof Error ? error.message : 'Failed to request reset token'
+      )
+    } finally {
+      setResetLoading(false)
+    }
+  }
+
+  const handleResetPassword = async () => {
+    setResetError('')
+    setResetMessage('')
+
+    if (!resetToken.trim()) {
+      setResetError('Reset token is required.')
+      return
+    }
+    if (newPassword.length < 8) {
+      setResetError('Password must be at least 8 characters.')
+      return
+    }
+    if (newPassword !== confirmNewPassword) {
+      setResetError('Passwords do not match.')
+      return
+    }
+
+    setResetLoading(true)
+    try {
+      const response = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: resetToken.trim(),
+          newPassword,
+        }),
+      })
+      const data = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(data?.error || 'Failed to reset password')
+      }
+      setResetMessage('Password updated. You can log in with the new password.')
+      setShowForgotPassword(false)
+      setPassword('')
+      setResetToken('')
+      setNewPassword('')
+      setConfirmNewPassword('')
+    } catch (error) {
+      setResetError(
+        error instanceof Error ? error.message : 'Failed to reset password'
+      )
+    } finally {
+      setResetLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -518,7 +605,26 @@ export default function AdminPage() {
         authStatus={authStatus}
         password={password}
         authError={authError}
+        showForgotPassword={showForgotPassword}
+        recoveryEmail={recoveryEmail}
+        resetToken={resetToken}
+        newPassword={newPassword}
+        confirmNewPassword={confirmNewPassword}
+        resetError={resetError}
+        resetMessage={resetMessage}
+        resetLoading={resetLoading}
         onPasswordChange={setPassword}
+        onToggleForgotPassword={() => {
+          setShowForgotPassword(value => !value)
+          setResetError('')
+          setResetMessage('')
+        }}
+        onRecoveryEmailChange={setRecoveryEmail}
+        onResetTokenChange={setResetToken}
+        onNewPasswordChange={setNewPassword}
+        onConfirmNewPasswordChange={setConfirmNewPassword}
+        onRequestReset={handleRequestReset}
+        onResetPassword={handleResetPassword}
         onSubmit={handleLogin}
       />
     )
